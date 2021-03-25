@@ -14,7 +14,6 @@ import wx.xrc
 ## Class MyFrame4
 ###########################################################################
 from util.eventbus.GlobalBus import GlobalBus, subscribe, Mode, threading
-
 from util.eventbus.HashMapEvent import HashMapEvent
 from util.serial.SerialManager import SerialManager
 

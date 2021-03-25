@@ -37,7 +37,7 @@ class SerialManager:
                     event.map[SerialManager.toString()] = SerialManager.toString()
                     event.map["line"] = self.line
 
-                    GlobalBus.sBus.post(event)
+                    GlobalBus.post(event)
                     # self.printLine(self.line)
 
                     self.line.clear()
