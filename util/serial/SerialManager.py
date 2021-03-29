@@ -49,6 +49,6 @@ class SerialManager:
 
 
 # Test Code
-if __name__ == "__main__":
-    manager = SerialManager()
-    manager.start()
+# if __name__ == "__main__":
+#     manager = SerialManager()
+#     manager.start()
