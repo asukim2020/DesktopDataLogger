@@ -1,8 +1,5 @@
 import serial
-import asyncio
-
-from util.eventbus.GlobalBus import GlobalBus, subscribe, Mode, threading
-from util.eventbus.HashMapEvent import HashMapEvent
+import threading
 
 
 class SerialManager:
@@ -14,11 +11,13 @@ class SerialManager:
 
         # 객체 변수 선언
         self.ser = None
+        self.window = None
         self.line = []
         self.exitMeasureThread = False
 
-    def start(self):
+    def start(self, window):
         self.exitMeasureThread = True
+        self.window = window
         if self.ser is None:
             self.ser = serial.Serial(SerialManager.port, SerialManager.baud, timeout=0)
         thread = threading.Thread(target=self.readThread)
@@ -29,47 +28,24 @@ class SerialManager:
 
         while self.exitMeasureThread:
             for c in self.ser.read():
-                GlobalBus.register(self)
                 self.line.append(chr(c))
 
                 if c == 10:
-                    event = HashMapEvent()
-                    event.map[SerialManager.toString()] = SerialManager.toString()
-                    event.map["line"] = self.line
-
-                    GlobalBus.post(event)
-                    # self.printLine(self.line)
+                    tmp = ''.join(self.line)
+                    print(tmp)
+                    # TODO: - 여기서 변환 코드, 그래프 등 적용할 것
+                    self.window.setText(tmp)
 
                     self.line.clear()
 
     def end(self):
         self.exitMeasureThread = False
+        self.window = None
 
         if self.ser is not None:
             self.ser.write(b"*T$")
             self.ser.close()
             self.ser = None
-
-    @staticmethod
-    def printLine(s):
-        tmp = ''.join(s)
-
-        # 출력!
-        print(tmp)
-
-    @staticmethod
-    def toString():
-        return "SerialManager"
-
-    @subscribe(threadMode=Mode.POSTING, onEvent=HashMapEvent)
-    def func(self, event):
-        serialManager = event.map.get(SerialManager.toString())
-        if serialManager is not None:
-            line = event.map.get("line")
-
-            if line is not None:
-                tmp = ''.join(line)
-                print(tmp)
 
 
 # Test Code
