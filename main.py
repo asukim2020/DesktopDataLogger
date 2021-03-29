@@ -13,9 +13,9 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
-from util.serial.SerialManager import SerialManager
+from python.serial.SerialManager import SerialManager
 
-form_class = uic.loadUiType("demo.ui")[0]
+form_class = uic.loadUiType("python/layout/demo.ui")[0]
 
 
 class DemoWindow(QMainWindow, form_class):
