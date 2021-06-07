@@ -3,7 +3,7 @@ import threading
 
 
 class SerialManager:
-    port = "COM1"
+    port = "/dev/ttyS1"
     baud = 38400
 
     def __init__(self):
