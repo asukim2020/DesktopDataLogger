@@ -3,7 +3,7 @@ import threading
 
 
 class SerialManager:
-    # port = "/dev/ttyS1"
+    # port = "/dev/ttyS0"
     port = "COM1"
     baud = 38400
 
