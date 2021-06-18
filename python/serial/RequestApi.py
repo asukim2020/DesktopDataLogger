@@ -59,15 +59,14 @@ class RequestApi:
         }
         response = requests.get(self.url + '/measure/get/items/time', params=query)
         print(response)
-        io = StringIO(response.text)
-        json_data = json.load(io)
+        jstr = response.text
+        json_data = json.loads(jstr)
         print(json.dumps(json_data, indent=4))
 
 
     def jsonTest(self):
-        io = StringIO(
-            '{"measureId": 177003, "name": "1111", "createTime": "2021-06-15T01:23:56.440+00:00", "mode": "INTERVAL", "status": "ING"}')
-        json_data = json.load(io)
+        jstr = '{"measureId": 177003, "name": "1111", "createTime": "2021-06-15T01:23:56.440+00:00", "mode": "INTERVAL", "status": "ING"}'
+        json_data = json.loads(jstr)
 
         print(json_data['measureId'])
         print(json_data['name'])
@@ -79,4 +78,4 @@ if __name__ == "__main__":
     # api.start()
     # api.jsonTest()
     # api.addMeasureItem()
-    # api.getMeasureItems()
+    api.getMeasureItems()

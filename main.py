@@ -36,13 +36,14 @@ if __name__ == "__main__":
     date = datetime.datetime.fromtimestamp(t)
 
     # start of day
-    date = date.replace(hour=0, minute=0, second=0, microsecond=0)
+    # date = date.replace(hour=0, minute=0, second=0, microsecond=0)
 
     # end of day
     # date = date.replace(hour=0, minute=0, second=0, microsecond=0)
     # date += datetime.timedelta(days=1, milliseconds=-1)
 
     # next day
-    date += datetime.timedelta(days=0)
+    # date += datetime.timedelta(days=0)
 
     print(date)
+    print(date.timestamp())
