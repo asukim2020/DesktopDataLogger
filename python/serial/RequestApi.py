@@ -6,12 +6,14 @@ import json
 
 class RequestApi:
 
+
     def __init__(self):
         super().__init__()
 
         # self.url = 'http://3.37.113.193:8080/'
-        # self.url = 'http://localhost:8080'
-        self.url = 'http://211.184.136.231:8080'
+        self.url = 'http://localhost:8080'
+        # self.url = 'http://211.184.136.231:8080'
+
 
     def start(self):
         # mode -> "step" or "interval"
@@ -25,6 +27,7 @@ class RequestApi:
         print(json_data['name'])
 
         return id
+
 
     def addMeasureItem(self):
         id = 1
@@ -51,6 +54,7 @@ class RequestApi:
         # query = {'id': id}
         # requests.post(self.url + "/measure/post/items", params=query, json=json_data)
 
+
     def getMeasureItems(self):
         query = {
             'id': 1,
@@ -63,6 +67,7 @@ class RequestApi:
         jstr = response.text
         json_data = json.loads(jstr)
         print(json.dumps(json_data, indent=4))
+
 
     def setSensorSetting(self):
         id = 1
@@ -82,6 +87,7 @@ class RequestApi:
         response = requests.post(self.url + "/measure/sensor/set/list", params=query, json=obj)
         print(response)
         print(response.text)
+
 
     def getSensorItems(self):
         query = {'id': '1'}
@@ -123,6 +129,33 @@ class RequestApi:
         sendString = ''.join(sendStringList)
         print(sendString)
 
+
+    def fileUpload(self):
+        f = open('C:/Users/Asu/Downloads/앱이미지2/아이콘.png', 'rb')
+
+        files = {"file": f}
+
+        resp = requests.post(self.url + '/uploadFile', files=files)
+
+        print(resp.text)
+
+        print("status code " + str(resp.status_code))
+
+        if resp.status_code == 200:
+            print("Success")
+            print(resp.json())
+        else:
+            print("Failure")
+
+
+    def fileDownload(self):
+        # http://localhost:8080/downloadFile/%EC%95%84%EC%9D%B4%EC%BD%98.png
+        response = requests.get(self.url + '/downloadFile/아이콘.png')
+        print(response.content)
+        print(response.text)
+        print(response)
+
+
     def jsonTest(self):
         jstr = '{"measureId": 177003, "name": "1111", "createTime": "2021-06-15T01:23:56.440+00:00", "mode": "INTERVAL", "status": "ING"}'
         json_data = json.loads(jstr)
@@ -139,4 +172,6 @@ if __name__ == "__main__":
     # api.addMeasureItem()
     # api.getMeasureItems()
     # api.setSensorSetting()
-    api.getSensorItems()
+    # api.getSensorItems()
+    # api.fileUpload()
+    # api.fileDownload()
