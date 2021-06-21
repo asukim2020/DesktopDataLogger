@@ -10,8 +10,8 @@ class RequestApi:
     def __init__(self):
         super().__init__()
 
-        # self.url = 'http://3.37.113.193:8080/'
-        self.url = 'http://localhost:8080'
+        self.url = 'http://3.37.113.193:8080/'
+        # self.url = 'http://localhost:8080'
         # self.url = 'http://211.184.136.231:8080'
 
 
@@ -131,7 +131,7 @@ class RequestApi:
 
 
     def fileUpload(self):
-        f = open('C:/Users/Asu/Downloads/앱이미지2/아이콘.png', 'rb')
+        f = open('C:/Users/Asu/Downloads/앱이미지2/015.csv', 'rb')
 
         files = {"file": f}
 
@@ -150,8 +150,8 @@ class RequestApi:
 
     def fileDownload(self):
         # http://localhost:8080/downloadFile/%EC%95%84%EC%9D%B4%EC%BD%98.png
-        response = requests.get(self.url + '/downloadFile/아이콘.png')
-        print(response.content)
+        response = requests.get(self.url + '/downloadFile/015.csv')
+        # print(response.content)
         print(response.text)
         print(response)
 
