@@ -4,6 +4,11 @@ import requests
 import json
 
 
+# TODO: - 라즈베리에서 15.csv 파일을 받아 업로드 해서 속도가 얼만나 나오는지 테스트
+# TODO: - 즉, 모뎀의 인터넷 속도가 얼마인지 알아보기
+
+# TODO: - 초당 100 개 인 경우 받
+
 class RequestApi:
 
 
