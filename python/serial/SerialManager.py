@@ -8,7 +8,8 @@ from python.serial.TimeUtil import TimeUtil
 
 class SerialManager:
     # port = "/dev/ttyS0"
-    port = "COM1"
+    port = "/dev/ttyAMA0"
+    # port = "COM1"
     baud = 9600
 
     def __init__(self):
@@ -46,7 +47,7 @@ class SerialManager:
 
                     print(tmp, end='')
 
-                if len(self.items) == 100:
+                if len(self.items) == 1000:
                     copyItems = copy.deepcopy(self.items)
                     api.addMeasureItems(copyItems)
                     self.items.clear()

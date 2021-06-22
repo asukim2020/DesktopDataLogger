@@ -31,6 +31,12 @@ import datetime
 from python.serial.SerialManager import SerialManager
 
 if __name__ == "__main__":
+
+    # Linux
+    import sys
+    sys.path.append("/home/pi/Documents/DesktopDataLogger/python/serial")
+    print(sys.path)
+
     serial = SerialManager()
     serial.start()
 

@@ -187,6 +187,6 @@ if __name__ == "__main__":
     # api.addMeasureItem()
     # api.getMeasureItems()
     # api.setSensorSetting()
-    api.getSensorItems()
+    # api.getSensorItems()
     # api.fileUpload()
     # api.fileDownload()
