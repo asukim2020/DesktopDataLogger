@@ -66,8 +66,8 @@ class RequestApi:
     def getMeasureItems(cls):
         query = {
             'id': 1,
-            'startTime': 1623892415373,
-            'endTime': 1623892435373,
+            'startTime': 1624342645174,
+            'endTime': 1624342655078,
             'afterId': 0
         }
         response = requests.get(cls.url + '/measure/get/items/time', params=query)
@@ -181,11 +181,10 @@ class RequestApi:
 if __name__ == "__main__":
     from RequestApi import RequestApi as api
 
-    # api = RequestApi()
     # api.start()
     # api.jsonTest()
     # api.addMeasureItem()
-    # api.getMeasureItems()
+    api.getMeasureItems()
     # api.setSensorSetting()
     # api.getSensorItems()
     # api.fileUpload()
