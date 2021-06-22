@@ -39,16 +39,15 @@ class SerialManager:
                 if c == 10:
                     tmp = ''.join(self.line)
 
-                    for i in range(0, 5):
-                        dic = {}
-                        dic["data"] = tmp
-                        dic["time"] = TimeUtil.getNewTimeByLong()
-                        self.items.append(dic)
+                    dic = {}
+                    dic["data"] = tmp
+                    dic["time"] = TimeUtil.getNewTimeByLong()
+                    self.items.append(dic)
                     self.line.clear()
 
                     print(tmp, end='')
 
-                if len(self.items) == 1000:
+                if len(self.items) >= 100:
                     copyItems = copy.deepcopy(self.items)
                     api.addMeasureItems(copyItems)
                     self.items.clear()
