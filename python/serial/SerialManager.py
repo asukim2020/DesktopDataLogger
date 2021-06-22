@@ -39,10 +39,11 @@ class SerialManager:
                 if c == 10:
                     tmp = ''.join(self.line)
 
-                    dic = {}
-                    dic["data"] = tmp
-                    dic["time"] = TimeUtil.getNewTimeByLong()
-                    self.items.append(dic)
+                    for i in range(0, 5):
+                        dic = {}
+                        dic["data"] = tmp
+                        dic["time"] = TimeUtil.getNewTimeByLong()
+                        self.items.append(dic)
                     self.line.clear()
 
                     print(tmp, end='')
