@@ -1,5 +1,9 @@
 import serial
 import threading
+import copy
+from RequestApi import RequestApi as api
+
+from python.serial.TimeUtil import TimeUtil
 
 
 class SerialManager:
@@ -14,6 +18,7 @@ class SerialManager:
         self.ser = None
         self.line = []
         self.exitMeasureThread = False
+        self.items = []
 
     def start(self):
         self.exitMeasureThread = True
@@ -32,10 +37,21 @@ class SerialManager:
 
                 if c == 10:
                     tmp = ''.join(self.line)
-                    print(tmp)
-                    # TODO: - 여기서 변환 코드, 그래프 등 적용할 것
 
+                    dic = {}
+                    dic["data"] = tmp
+                    dic["time"] = TimeUtil.getNewTimeByLong()
+                    self.items.append(dic)
                     self.line.clear()
+
+                    print(tmp, end='')
+
+                if len(self.items) == 100:
+                    copyItems = copy.deepcopy(self.items)
+                    api.addMeasureItems(copyItems)
+                    self.items.clear()
+
+
 
     def end(self):
         self.exitMeasureThread = False
