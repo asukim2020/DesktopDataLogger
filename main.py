@@ -28,12 +28,17 @@ import datetime as dt
 import time
 import datetime
 
-if __name__ == "__main__":
-    t = time.time()
-    # float
-    print(int(t * 1000 % 0xFFFFFFFFFFFFFFFF))
+from python.serial.SerialManager import SerialManager
 
-    date = datetime.datetime.fromtimestamp(t)
+if __name__ == "__main__":
+    serial = SerialManager()
+    serial.start()
+
+    # t = time.time()
+    # float
+    # print(int(t * 1000 % 0xFFFFFFFFFFFFFFFF))
+
+    # date = datetime.datetime.fromtimestamp(t)
 
     # start of day
     # date = date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -45,5 +50,5 @@ if __name__ == "__main__":
     # next day
     # date += datetime.timedelta(days=0)
 
-    print(date)
-    print(date.timestamp())
+    # print(date)
+    # print(date.timestamp())

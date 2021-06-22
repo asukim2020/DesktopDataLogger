@@ -1,7 +1,7 @@
 import serial
 import threading
 import copy
-from RequestApi import RequestApi as api
+from python.serial.RequestApi import RequestApi as api
 
 from python.serial.TimeUtil import TimeUtil
 
