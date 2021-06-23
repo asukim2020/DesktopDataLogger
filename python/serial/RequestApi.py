@@ -10,8 +10,8 @@ import json
 # TODO: - 초당 100 개 인 경우 받
 
 class RequestApi:
-    # url = 'http://3.37.113.193:8080/'
-    url = 'http://localhost:8080'
+    url = 'http://3.37.113.193:8080/'
+    # url = 'http://localhost:8080'
 
     def __init__(self):
         super().__init__()
