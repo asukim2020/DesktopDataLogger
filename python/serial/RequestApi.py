@@ -10,7 +10,8 @@ import json
 # TODO: - 초당 100 개 인 경우 받
 
 class RequestApi:
-    url = 'http://3.37.113.193:8080/'
+    # url = 'http://3.37.113.193:8080/'
+    url = 'http://localhost:8080'
 
     def __init__(self):
         super().__init__()
@@ -19,11 +20,24 @@ class RequestApi:
         # self.url = 'http://localhost:8080'
         # self.url = 'http://211.184.136.231:8080'
 
+    @classmethod
+    def setCompany(cls):
+        ip = requests.get('https://api.ipify.org')
+
+        query = {
+            'name': 'GreenTech',
+            'ip': ip.text
+        }
+        response = requests.post(cls.url + '/measure/post/company', params=query)
+        print(response.text)
 
     @classmethod
     def start(cls):
         # mode -> "step" or "interval"
-        query = {'name': '12345'}
+        query = {
+            'id': 1,
+            'name': '12345'
+        }
         response = requests.post(cls.url + '/measure/post/start', params=query)
 
         jstr = response.text
@@ -34,10 +48,9 @@ class RequestApi:
 
         return id
 
-
     @classmethod
     def addMeasureItems(cls, items):
-        id = 1
+        id = 2
         # obj = []
         # for i in range(0, 3):
         #     dic = {}
@@ -61,11 +74,10 @@ class RequestApi:
         # query = {'id': id}
         # requests.post(self.url + "/measure/post/items", params=query, json=json_data)
 
-
     @classmethod
     def getMeasureItems(cls):
         query = {
-            'id': 1,
+            'id': 2,
             'startTime': 1624342645174,
             'endTime': 1624342655078,
             'afterId': 0
@@ -76,10 +88,9 @@ class RequestApi:
         json_data = json.loads(jstr)
         print(json.dumps(json_data, indent=4))
 
-
     @classmethod
     def setSensorSetting(cls):
-        id = 1
+        id = 2
         obj = []
         for i in range(0, 3):
             dic = {}
@@ -97,10 +108,9 @@ class RequestApi:
         print(response)
         print(response.text)
 
-
     @classmethod
     def getSensorItems(cls):
-        query = {'id': '1'}
+        query = {'id': 2}
         response = requests.get(cls.url + '/measure/sensor/get/list', params=query)
 
         jstr = response.text
@@ -139,7 +149,6 @@ class RequestApi:
         sendString = ''.join(sendStringList)
         print(sendString)
 
-
     @classmethod
     def fileUpload(cls):
         f = open('C:/Users/Asu/Downloads/앱이미지2/015.csv', 'rb')
@@ -158,7 +167,6 @@ class RequestApi:
         else:
             print("Failure")
 
-
     @classmethod
     def fileDownload(cls):
         # http://localhost:8080/downloadFile/%EC%95%84%EC%9D%B4%EC%BD%98.png
@@ -166,7 +174,6 @@ class RequestApi:
         # print(response.content)
         print(response.text)
         print(response)
-
 
     @classmethod
     def jsonTest(cls):
@@ -181,10 +188,11 @@ class RequestApi:
 if __name__ == "__main__":
     from RequestApi import RequestApi as api
 
+    # api.setCompany()
     # api.start()
     # api.jsonTest()
-    # api.addMeasureItem()
-    api.getMeasureItems()
+    # api.addMeasureItems()
+    # api.getMeasureItems()
     # api.setSensorSetting()
     # api.getSensorItems()
     # api.fileUpload()
