@@ -24,7 +24,7 @@ class SerialManager:
         self.safetyCount = 0
 
         self.abnormalData = 0
-        self.alwaysSaveCount = 500
+        self.alwaysSaveCount = 3000
 
     def start(self):
         self.exitMeasureThread = True
