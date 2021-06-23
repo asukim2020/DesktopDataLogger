@@ -33,17 +33,17 @@ from python.serial.SerialManager import SerialManager
 if __name__ == "__main__":
     import socket
 
-    from requests import get
-    ip = get('https://api.ipify.org')
-    print(f'{ip.text}')
+    # from requests import get
+    # ip = get('https://api.ipify.org')
+    # print(f'{ip.text}')
 
     # Linux add path
-    # import sys
-    # sys.path.append("/home/pi/Documents/DesktopDataLogger/python/serial")
-    # print(sys.path)
-    #
-    # serial = SerialManager()
-    # serial.start()
+    import sys
+    sys.path.append("/home/pi/Documents/DesktopDataLogger/python/serial")
+    print(sys.path)
+
+    serial = SerialManager()
+    serial.start()
     # serial.end()
 
     # t = time.time()
