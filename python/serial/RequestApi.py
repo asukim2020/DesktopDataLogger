@@ -10,8 +10,8 @@ import json
 # TODO: - 초당 100 개 인 경우 받
 
 class RequestApi:
-    url = 'http://3.37.113.193:8080/'
-    # url = 'http://localhost:8080'
+    # url = 'http://3.37.113.193:8080/'
+    url = 'http://localhost:8080'
 
     def __init__(self):
         super().__init__()
@@ -22,31 +22,53 @@ class RequestApi:
 
     @classmethod
     def setCompany(cls):
-        ip = requests.get('https://api.ipify.org')
+        try:
+            ip = requests.get('https://api.ipify.org')
 
-        query = {
-            'name': 'GreenTech',
-            'ip': ip.text
-        }
-        response = requests.post(cls.url + '/measure/post/company', params=query)
-        print(response.text)
+            query = {
+                'name': 'GreenTech',
+                'ip': ip.text
+            }
+            response = requests.post(cls.url + '/measure/post/company', params=query)
+            print(response.text)
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
 
     @classmethod
     def start(cls):
-        # mode -> "step" or "interval"
-        query = {
-            'id': 1,
-            'name': '12345'
-        }
-        response = requests.post(cls.url + '/measure/post/start', params=query)
+        try:
+            # mode -> "step" or "interval"
+            query = {
+                'id': 1,
+                'name': '12345'
+            }
+            response = requests.post(cls.url + '/measure/post/start', params=query)
 
-        jstr = response.text
-        json_data = json.loads(jstr)
-        id = json_data['measureId']
-        print(id)
-        print(json_data['name'])
+            jstr = response.text
+            json_data = json.loads(jstr)
+            id = json_data['measureId']
+            print(id)
+            print(json_data['name'])
+            return id
 
-        return id
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
+        return -1
+
+
 
     @classmethod
     def addMeasureItems(cls, items):
@@ -58,10 +80,20 @@ class RequestApi:
         #     dic["time"] = 1623892415373 + (10000 * i)
         #     obj.append(dic)
 
-        query = {'id': id}
-        response = requests.post(cls.url + "/measure/post/items", params=query, json=items)
-        print(response)
-        print(response.text)
+        try:
+            query = {'id': id}
+            response = requests.post(cls.url + "/measure/post/items", params=query, json=items)
+            print(response)
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
+        # print(response.text)
 
         # jstr = StringIO('['
         #                 '{"data": "*+1234+1234+1234$","time": 1623892395373},'
@@ -76,17 +108,26 @@ class RequestApi:
 
     @classmethod
     def getMeasureItems(cls):
-        query = {
-            'id': 2,
-            'startTime': 1624342645174,
-            'endTime': 1624342655078,
-            'afterId': 0
-        }
-        response = requests.get(cls.url + '/measure/get/items/time', params=query)
-        print(response)
-        jstr = response.text
-        json_data = json.loads(jstr)
-        print(json.dumps(json_data, indent=4))
+        try:
+            query = {
+                'id': 2,
+                'startTime': 1624342645174,
+                'endTime': 1624342655078,
+                'afterId': 0
+            }
+            response = requests.get(cls.url + '/measure/get/items/time', params=query)
+            print(response)
+            jstr = response.text
+            json_data = json.loads(jstr)
+            print(json.dumps(json_data, indent=4))
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
 
     @classmethod
     def setSensorSetting(cls):
@@ -151,29 +192,48 @@ class RequestApi:
 
     @classmethod
     def fileUpload(cls):
-        f = open('C:/Users/Asu/Downloads/앱이미지2/015.csv', 'rb')
+        try:
+            f = open('C:/Users/Asu/Downloads/앱이미지2/015.csv', 'rb')
 
-        files = {"file": f}
+            files = {"file": f}
 
-        resp = requests.post(cls.url + '/uploadFile', files=files)
+            resp = requests.post(cls.url + '/uploadFile', files=files)
 
-        print(resp.text)
+            print(resp.text)
 
-        print("status code " + str(resp.status_code))
+            print("status code " + str(resp.status_code))
 
-        if resp.status_code == 200:
-            print("Success")
-            print(resp.json())
-        else:
-            print("Failure")
+            if resp.status_code == 200:
+                print("Success")
+                print(resp.json())
+            else:
+                print("Failure")
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
 
     @classmethod
     def fileDownload(cls):
-        # http://localhost:8080/downloadFile/%EC%95%84%EC%9D%B4%EC%BD%98.png
-        response = requests.get(cls.url + '/downloadFile/015.csv')
-        # print(response.content)
-        print(response.text)
-        print(response)
+        try:
+            # http://localhost:8080/downloadFile/%EC%95%84%EC%9D%B4%EC%BD%98.png
+            response = requests.get(cls.url + '/downloadFile/015.csv')
+            # print(response.content)
+            print(response.text)
+            print(response)
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
 
     @classmethod
     def jsonTest(cls):

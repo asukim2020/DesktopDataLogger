@@ -46,6 +46,18 @@ if __name__ == "__main__":
     serial.start()
     # serial.end()
 
+    # from python.serial.TimeUtil import TimeUtil
+    # t1 = TimeUtil.getNewTimeByLong()
+    # print(t1)
+    #
+    # date = TimeUtil.getNextDay(t1, 1)
+    # t2 = TimeUtil.dateToLong(date)
+    # print((t2%3600000)/60000)
+
+
+    # print(t2 - t1)
+    # print((t2 - t1)/24/60/60/1000)
+
     # t = time.time()
     # float
     # print(int(t * 1000 % 0xFFFFFFFFFFFFFFFF))
