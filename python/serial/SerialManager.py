@@ -8,8 +8,8 @@ from python.serial.TimeUtil import TimeUtil
 
 class SerialManager:
     # port = "/dev/ttyS0"
-    port = "/dev/ttyAMA0"
-    # port = "COM1"
+    # port = "/dev/ttyAMA0"
+    port = "COM1"
     baud = 38400
     saveBufferTime = 30
     accelIntervalPerSec = 100
@@ -74,20 +74,22 @@ class SerialManager:
                     tmp = ''.join(self.line)
 
                     measureItem = {}
-                    measureItem["data"] = tmp
-                    measureItem["time"] = TimeUtil.getNewTimeByLong()
-
                     self.line.clear()
 
                     # print(tmp, end='')
 
-                    tmp = tmp.replace("+", ",")
-                    tmp = tmp.replace("-", ",-")
+                    tmp = tmp.replace("+", " , ")
+                    tmp = tmp.replace("-", " , -")
                     tmp = tmp.replace("*", "")
                     tmp = tmp.replace("$", "")
                     data = tmp.split(",")
 
+                    measureItem["data"] = tmp
+                    measureItem["time"] = TimeUtil.getNewTimeByLong()
+
                     if len(data) < 5: continue
+                    if len(data[0]) > 1: continue
+                    # print("len : %d"%len(data[0]))
 
                     # print("%d, %d, %d, %d, %d"
                     #       % (
@@ -246,9 +248,8 @@ class SerialManager:
 
     def writeFile(self, file, time, diff, data):
         self.stringList.append(str(TimeUtil.longToDate(time)))
-        self.stringList.append(", ")
+        self.stringList.append(" , ")
         self.stringList.append(format(diff, ".2f"))
-        self.stringList.append(", ")
         self.stringList.append(data)
 
         writeString = ''.join(self.stringList)

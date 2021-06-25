@@ -53,7 +53,7 @@ class TimeUtil:
     def checkAClock(cls, maxMin):
         # TODO: - 테스트 코드 지울 것
         TimeUtil.count += 1
-        if 3000 < TimeUtil.count < 6000:
+        if 300 < TimeUtil.count < 600:
             return True
         else:
             return False
