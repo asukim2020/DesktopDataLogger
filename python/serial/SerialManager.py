@@ -28,10 +28,11 @@ class SerialManager:
         self.line = []
         self.exitMeasureThread = False
 
-        self.emergencyFlag = False
-        self.safetyCount = 0
+        self.triggerFlag = False
+        self.triggerCount = 0
         self.abnormalData = 0
-        self.emergencyFile = None
+        self.triggerFile = None
+        self.triggerDiff = 0.0
 
         self.requestFlag = False
         self.requestFile = None
@@ -113,21 +114,20 @@ class SerialManager:
                             if TimeUtil.checkAClock(SerialManager.slopeMeasureMin):
                                 if self.slopeFile == None:
                                     print("file open")
-                                    fileName = "slopeFile.csv"
+                                    fileName = "slope.csv"
                                     interval = format(1/SerialManager.slopeIntervalPerSec, ".2f")
-                                    self.slopeFile = open("slopeFile.csv", 'w')
+                                    self.slopeFile = open("slope.csv", 'w')
                                     self.slopeDiff = 0.0
                                     self.writeFileHeader(self.slopeFile, fileName, interval, True)
                                     self.slopeBufferDataWriteFile(self.slopeFile, self.slopeItems)
-                                    # TODO: - file header 추가 및 버퍼 데이터 추가
                                     print("정시 측정 시작")
                             else:
                                 if self.slopeFile != None:
                                     print("file close")
                                     self.slopeFile.close()
                                     self.slopeFile = None
-                                    # TODO: - file close and upload
                                     print("정시 측정 종료")
+                                    api.slopeFileUpload()
 
 
                     else:
@@ -142,59 +142,73 @@ class SerialManager:
                         self.accelTimeCheckCount += 1
                         self.accelWriteFile(self.accelFile, measureItem, self.accelItems)
 
+                        # trigger check
                         if int(data[2]) < self.abnormalData \
-                                and not self.emergencyFlag:
-                            self.emergencyFlag = True
+                                and not self.triggerFlag:
+                            self.triggerFlag = True
                             print("지진 발생")
 
-                        if self.emergencyFlag:
-                            self.safetyCount += 1
-                            # TODO: - file write
+                            if self.triggerFile == None:
+                                print("file open")
+                                self.triggerFile = open("trigger.csv", 'w')
+                                self.triggerDiff = 0.0
+                                fileName = "trigger.csv"
+                                interval = format(1 / SerialManager.accelIntervalPerSec, ".2f")
+                                self.writeFileHeader(self.triggerFile, fileName, interval, False)
+                                self.triggerBufferDataWriteFile(self.triggerFile, self.accelItems)
 
-                            if self.safetyCount > self.accelSaveCount \
-                                    and self.emergencyFlag:
+                        # trigger save
+                        if self.triggerFlag:
+                            self.triggerCount += 1
+                            self.triggerWriteFile(self.triggerFile, self.accelItems)
+
+                            if self.triggerCount > self.accelSaveCount \
+                                    and self.triggerFlag:
                                 print("지진 종료")
-                                self.emergencyFlag = False
-                                # TODO: - upload
-                                self.safetyCount = 0
+                                self.triggerFlag = False
+                                self.triggerCount = 0
 
-                        if self.requestFlag:
-                            self.requestCount += 1
-                            # TODO: - file write
+                                if self.triggerFile != None:
+                                    print("file close")
+                                    self.triggerFile.close()
+                                    self.triggerFile = None
+                                    api.triggerFileUpload()
 
-                            if self.requestCount > self.accelSaveCount \
-                                    and self.requestFlag:
-                                print("지진 종료")
-                                # self.uploadAccelMeasureItems()
-                                self.emergencyFlag = False
-                                # TODO: - upload
-                                self.requestCount = 0
+                        # if self.requestFlag:
+                        #     self.requestCount += 1
+                        #
+                        #     if self.requestCount > self.accelSaveCount \
+                        #             and self.requestFlag:
+                        #         print("지진 종료")
+                        #         # self.uploadAccelMeasureItems()
+                        #         self.requestFlag = False
+                        #         # TODO: - upload
+                        #         self.requestCount = 0
 
                         if self.accelTimeCheckCount >= SerialManager.accelIntervalPerSec:
                             if TimeUtil.checkAClock(SerialManager.accelMeasureMin):
                                 if self.accelFile == None:
                                     print("file open")
-                                    self.accelFile = open("accelFile.csv", 'w')
+                                    self.accelFile = open("accel.csv", 'w')
                                     self.accelDiff = 0.0
-                                    fileName = "accelFile.csv"
+                                    fileName = "accel.csv"
                                     interval = format(1/SerialManager.accelIntervalPerSec, ".2f")
                                     self.writeFileHeader(self.accelFile, fileName, interval, False)
                                     self.accelBufferDataWriteFile(self.accelFile, self.accelItems)
-                                    # TODO: - file header 추가 및 버퍼 데이터 추가
                                     print("정시 측정 시작")
                             else:
                                 if self.accelFile != None:
                                     print("file close")
                                     self.accelFile.close()
                                     self.accelFile = None
-                                    # TODO: - file close and upload
+                                    api.accelFileUpload()
                                     print("정시 측정 종료")
 
                     else:
                         self.accelCount += 1
 
                     while len(self.accelItems) > self.accelSaveCount \
-                            and not self.emergencyFlag:
+                            and not self.triggerFlag:
                         self.accelItems.pop(0)
 
                 # if len(self.items) >= 100:
@@ -216,7 +230,6 @@ class SerialManager:
         self.slopeItems.clear()
 
     def slopeWriteFile(self, file, nextItem, items):
-
         if file == None:
             items.append(nextItem)
             return
@@ -245,6 +258,23 @@ class SerialManager:
 
         items.append(nextItem)
         self.writeFile(file, time, self.accelDiff, data)
+
+    def triggerWriteFile(self, file, items):
+        if file == None:
+            return
+
+        lenItem = len(items)
+
+        if lenItem < 2: return
+
+        time = items[lenItem - 1]["time"]
+        data = items[lenItem - 1]["data"]
+        lenItems = len(items)
+
+        if lenItems > 0:
+            self.triggerDiff += float(items[lenItem - 1]["time"] - items[lenItems - 2]["time"]) / 1000.0
+
+        self.writeFile(file, time, self.triggerDiff, data)
 
     def writeFile(self, file, time, diff, data):
         self.stringList.append(str(TimeUtil.longToDate(time)))
@@ -308,6 +338,15 @@ class SerialManager:
                 self.accelDiff += float(time - items[idx - 1]["time"]) / 1000.0
             self.writeFile(file, time, self.accelDiff, data)
 
+    def triggerBufferDataWriteFile(self, file, items):
+        for idx in range(0, len(items)):
+
+            time = items[idx]["time"]
+            data = items[idx]["data"]
+
+            if idx > 0:
+                self.triggerDiff += float(time - items[idx - 1]["time"]) / 1000.0
+            self.writeFile(file, time, self.triggerDiff, data)
 
 
 

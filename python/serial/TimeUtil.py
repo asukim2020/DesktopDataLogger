@@ -52,11 +52,11 @@ class TimeUtil:
     @classmethod
     def checkAClock(cls, maxMin):
         # TODO: - 테스트 코드 지울 것
-        TimeUtil.count += 1
-        if 3000 < TimeUtil.count < 6000:
-            return True
-        else:
-            return False
+        # TimeUtil.count += 1
+        # if 3000 < TimeUtil.count < 6000:
+        #     return True
+        # else:
+        #     return False
         t = TimeUtil.getNewTimeByLong()
         min = (t % 3600000) / 60000
         if 0 <= min <= maxMin:

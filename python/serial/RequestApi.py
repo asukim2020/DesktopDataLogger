@@ -8,10 +8,12 @@ import json
 # TODO: - 즉, 모뎀의 인터넷 속도가 얼마인지 알아보기
 
 # TODO: - 초당 100 개 인 경우 받
+from python.serial.TimeUtil import TimeUtil
+
 
 class RequestApi:
-    # url = 'http://3.37.113.193:8080/'
-    url = 'http://localhost:8080'
+    url = 'http://3.37.113.193:8080/'
+    # url = 'http://localhost:8080'
 
     def __init__(self):
         super().__init__()
@@ -191,13 +193,116 @@ class RequestApi:
         print(sendString)
 
     @classmethod
+    def slopeFileUpload(cls):
+        try:
+            f = open('slope.csv', 'rb')
+            files = {"file": f}
+            resp = requests.post(cls.url + '/file/upload/slope', files=files)
+            print(resp.text)
+            print("status code " + str(resp.status_code))
+
+            if resp.status_code == 200:
+                print("Success")
+                print(resp.json())
+            else:
+                print("Failure")
+
+            f.close()
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
+    @classmethod
+    def accelFileUpload(cls):
+        try:
+            f = open('accel.csv', 'rb')
+            files = {"file": f}
+            resp = requests.post(cls.url + '/file/upload/accel', files=files)
+            print(resp.text)
+            print("status code " + str(resp.status_code))
+
+            if resp.status_code == 200:
+                print("Success")
+                print(resp.json())
+            else:
+                print("Failure")
+
+            f.close()
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
+    @classmethod
+    def triggerFileUpload(cls):
+        try:
+            f = open('trigger.csv', 'rb')
+            files = {"file": f}
+            resp = requests.post(cls.url + '/file/upload/trigger', files=files)
+            print(resp.text)
+            print("status code " + str(resp.status_code))
+
+            if resp.status_code == 200:
+                print("Success")
+                print(resp.json())
+            else:
+                print("Failure")
+
+            f.close()
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
+    @classmethod
+    def requestFileUpload(cls):
+        try:
+            f = open('request.csv', 'rb')
+            files = {"file": f}
+            resp = requests.post(cls.url + '/file/upload/request', files=files)
+            print(resp.text)
+            print("status code " + str(resp.status_code))
+
+            if resp.status_code == 200:
+                print("Success")
+                print(resp.json())
+            else:
+                print("Failure")
+
+            f.close()
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
+    @classmethod
     def fileUpload(cls):
         try:
             f = open('C:/Users/Asu/Downloads/앱이미지2/015.csv', 'rb')
 
             files = {"file": f}
 
-            resp = requests.post(cls.url + '/uploadFile', files=files)
+            resp = requests.post(cls.url + '/file/upload/slope', files=files)
+            # resp = requests.post(cls.url + '/file/upload/accel', files=files)
+            # resp = requests.post(cls.url + '/file/upload/trigger', files=files)
+            # resp = requests.post(cls.url + '/file/upload/request', files=files)
 
             print(resp.text)
 
@@ -208,6 +313,8 @@ class RequestApi:
                 print(resp.json())
             else:
                 print("Failure")
+
+            f.close()
         except requests.exceptions.HTTPError as errh:
             print(errh)
         except requests.exceptions.ConnectionError as errc:
@@ -221,7 +328,9 @@ class RequestApi:
     def fileDownload(cls):
         try:
             # http://localhost:8080/downloadFile/%EC%95%84%EC%9D%B4%EC%BD%98.png
-            response = requests.get(cls.url + '/downloadFile/015.csv')
+            time = TimeUtil.getNewTimeByLong()
+            query = {'time': time}
+            response = requests.get(cls.url + '/file/download/slope/slope', params=query)
             # print(response.content)
             print(response.text)
             print(response)
@@ -234,6 +343,22 @@ class RequestApi:
         except requests.exceptions.RequestException as err:
             print(err)
 
+
+    @classmethod
+    def deleteFile(cls):
+        try:
+            time = TimeUtil.getNewTimeByLong()
+            query = {'time': time}
+            response = requests.post(cls.url + '/file/delete', params=query)
+            print(response)
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
 
     @classmethod
     def jsonTest(cls):
@@ -257,3 +382,4 @@ if __name__ == "__main__":
     # api.getSensorItems()
     # api.fileUpload()
     # api.fileDownload()
+    # api.deleteFile()
