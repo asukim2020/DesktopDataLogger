@@ -29,6 +29,7 @@ import time
 import datetime
 
 from python.serial.SerialManager import SerialManager
+from python.serial.TCPServer import TCPServer
 
 if __name__ == "__main__":
     import socket
@@ -43,8 +44,14 @@ if __name__ == "__main__":
     print(sys.path)
 
     serial = SerialManager()
+    # serial.saveSettingData()
+    serial.getSettingData()
     serial.start()
+    SerialManager.instance = serial
     # serial.end()
+
+    # server = TCPServer()
+    # server.startServer()
 
     # from python.serial.TimeUtil import TimeUtil
     # t1 = TimeUtil.getNewTimeByLong()

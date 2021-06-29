@@ -8,6 +8,7 @@ class TCPServer:
     def __init__(self):
         self.host = ''  # Symbolic name meaning all available interfaces
         self.port = 8888  # Arbitrary non-privileged port
+        self.line = []
 
     def startServer(self):
         serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -53,6 +54,15 @@ class TCPServer:
             data = conn.recv(1024)
             if not data:
                 break
+
+            for c in data:
+                self.line.append(chr(c))
+
+                if c == 10 or c == '$':
+                    tmp = ''.join(self.line)
+                    print(tmp)
+                    self.line.clear()
+
 
             # conn.sendall(reply)
             print(data)

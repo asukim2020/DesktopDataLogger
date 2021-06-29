@@ -28,7 +28,7 @@ class RequestApi:
             ip = requests.get('https://api.ipify.org')
 
             query = {
-                'name': 'GreenTech',
+                'name': 'NGI',
                 'ip': ip.text
             }
             response = requests.post(cls.url + '/measure/post/company', params=query)
@@ -41,6 +41,26 @@ class RequestApi:
             print(errt)
         except requests.exceptions.RequestException as err:
             print(err)
+
+    @classmethod
+    def findCompany(cls):
+        try:
+            ip = requests.get('https://api.ipify.org')
+
+            query = {
+                'name': 'NGI'
+            }
+            response = requests.get(cls.url + '/measure/get/company/name', params=query)
+            print(response.text)
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
 
     @classmethod
     def start(cls):
@@ -329,11 +349,11 @@ class RequestApi:
         try:
             # http://localhost:8080/downloadFile/%EC%95%84%EC%9D%B4%EC%BD%98.png
             time = TimeUtil.getNewTimeByLong()
-            query = {'time': time}
-            response = requests.get(cls.url + '/file/download/slope/slope', params=query)
-            # print(response.content)
-            print(response.text)
-            print(response)
+            query = {'time': 1624862532320}
+            response = requests.get(cls.url + '/file/download/trigger/trigger_06_42.csv', params=query)
+            print(response.content)
+            # print(response.text)
+            # print(response)
         except requests.exceptions.HTTPError as errh:
             print(errh)
         except requests.exceptions.ConnectionError as errc:
@@ -348,8 +368,7 @@ class RequestApi:
     def deleteFile(cls):
         try:
             time = TimeUtil.getNewTimeByLong()
-            query = {'time': time}
-            response = requests.post(cls.url + '/file/delete', params=query)
+            response = requests.post(cls.url + '/file/delete')
             print(response)
         except requests.exceptions.HTTPError as errh:
             print(errh)
@@ -361,12 +380,45 @@ class RequestApi:
             print(err)
 
     @classmethod
+    def fileSearch(cls):
+        try:
+            # http://localhost:8080/downloadFile/%EC%95%84%EC%9D%B4%EC%BD%98.png
+            time = TimeUtil.getNewTimeByLong()
+            startOfDay = TimeUtil.getNewDate()
+            startOfDay = TimeUtil.startOfDay(startOfDay)
+            endOfDay = TimeUtil.getNewDate()
+            endOfDay = TimeUtil.endOfDay(endOfDay)
+
+            query = {
+                'type': "trigger",
+                'startTime': TimeUtil.dateToLong(startOfDay),
+                'endTime': TimeUtil.dateToLong(endOfDay)
+            }
+
+            print(query)
+
+            response = requests.get(cls.url + '/file/find', params=query)
+            # print(response.content)
+            print(response.text)
+            print(response)
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
+
+    @classmethod
     def jsonTest(cls):
         jstr = '{"measureId": 177003, "name": "1111", "createTime": "2021-06-15T01:23:56.440+00:00", "mode": "INTERVAL", "status": "ING"}'
         json_data = json.loads(jstr)
+        print(json.dumps(json_data))
 
-        print(json_data['measureId'])
-        print(json_data['name'])
+        # print(json_data['measureId'])
+        # print(json_data['name'])
 
 
 # Test Code
@@ -374,8 +426,8 @@ if __name__ == "__main__":
     from RequestApi import RequestApi as api
 
     # api.setCompany()
+    # api.findCompany()
     # api.start()
-    # api.jsonTest()
     # api.addMeasureItems()
     # api.getMeasureItems()
     # api.setSensorSetting()
@@ -383,3 +435,5 @@ if __name__ == "__main__":
     # api.fileUpload()
     # api.fileDownload()
     # api.deleteFile()
+    # api.fileSearch()
+    api.jsonTest()

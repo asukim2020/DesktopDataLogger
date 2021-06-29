@@ -49,8 +49,25 @@ class TimeUtil:
 
     count = 0
 
+    # start of day
+    # date = date.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    # end of day
+    # date = date.replace(hour=0, minute=0, second=0, microsecond=0)
+    # date += datetime.timedelta(days=1, milliseconds=-1)
+
     @classmethod
-    def checkAClock(cls, maxMin):
+    def startOfDay(cls, date):
+        return date.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    @classmethod
+    def endOfDay(cls, date):
+        date = date.replace(hour=0, minute=0, second=0, microsecond=0)
+        date += dt.timedelta(days=1, milliseconds=-1)
+        return date
+
+    @classmethod
+    def checkAClock(cls, hour, maxMin):
         # TODO: - 테스트 코드 지울 것
         # TimeUtil.count += 1
         # if 3000 < TimeUtil.count < 6000:
@@ -58,16 +75,23 @@ class TimeUtil:
         # else:
         #     return False
         t = TimeUtil.getNewTimeByLong()
+        # hour = t %
         min = (t % 3600000) / 60000
-        if 0 <= min <= maxMin:
+        if int((((t % 86400000) / 3600000) + 9) % 24) % hour == 0\
+            and 0 <= min <= maxMin:
             return True
         else:
             return False
 
 # test
 if __name__ == "__main__":
+    # t = TimeUtil.getNewTimeByLong()
+    # print(int((((t % 86400000) / 3600000) + 9) % 24))
+    # print((t % 3600000) / 60000)
     # date = TimeUtil.getDate(2021, 6, 24)
     # print(TimeUtil.dateToLong(date))
-    print(TimeUtil.getDate(2021, 6, 24))
+    # print(TimeUtil.getDate(2021, 6, 24))
+
+    print(TimeUtil.checkAClock(1, 5))
 
 
