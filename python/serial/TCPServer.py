@@ -2,6 +2,8 @@ import socket
 import sys
 import threading
 
+from python.serial.SerialManager import SerialManager
+
 
 class TCPServer:
 
@@ -57,15 +59,48 @@ class TCPServer:
 
             for c in data:
                 self.line.append(chr(c))
+                print(chr(c))
 
-                if c == 10 or c == '$':
+                # if c == 10 or c == '$':
+                if chr(c) == '$':
                     tmp = ''.join(self.line)
-                    print(tmp)
                     self.line.clear()
 
+                    idx = tmp.find('*')
+                    tmp = tmp[idx:]
+                    print("$ 발견: %s" % tmp)
+
+                    if '*RS' in tmp:
+                        instance = SerialManager.instance
+                        instance.slopeRequestSec = 10
+                        instance.createSlopeRequestFile()
+                        tmp = tmp.replace('*RS', '')
+                        tmp = tmp.replace('$', '')
+                        tmp = tmp.replace('_', '')
+                        try:
+                            sec = int(tmp)
+                            instance.slopeRequestSec = sec
+                        except Exception as e:
+                            print(e)
+
+                        print('createSlopeRequestFile()')
+                    elif '*RA' in tmp:
+                        instance = SerialManager.instance
+                        instance.accelRequestSec = 10
+                        instance.createAccelRequestFile()
+                        tmp = tmp.replace('*RA', '')
+                        tmp = tmp.replace('$', '')
+                        tmp = tmp.replace('_', '')
+                        try:
+                            sec = int(tmp)
+                            instance.accelRequestSec = sec
+                        except Exception as e:
+                            print(e)
+
+                        print('createAccelRequestFile()')
 
             # conn.sendall(reply)
-            print(data)
+            # print(data)
 
         # came out of loop
         conn.close()

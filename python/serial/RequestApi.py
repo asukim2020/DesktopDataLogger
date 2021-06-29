@@ -215,7 +215,7 @@ class RequestApi:
     @classmethod
     def slopeFileUpload(cls):
         try:
-            f = open('slope.csv', 'rb')
+            f = open('accel_request.csv', 'rb')
             files = {"file": f}
             resp = requests.post(cls.url + '/file/upload/slope', files=files)
             print(resp.text)
@@ -288,11 +288,36 @@ class RequestApi:
             print(err)
 
     @classmethod
-    def requestFileUpload(cls):
+    def slopeRequestFileUpload(cls):
         try:
-            f = open('request.csv', 'rb')
+            f = open('sloperequest.csv', 'rb')
             files = {"file": f}
-            resp = requests.post(cls.url + '/file/upload/request', files=files)
+            resp = requests.post(cls.url + '/file/upload/slope/request', files=files)
+            print(resp.text)
+            print("status code " + str(resp.status_code))
+
+            if resp.status_code == 200:
+                print("Success")
+                print(resp.json())
+            else:
+                print("Failure")
+
+            f.close()
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
+    @classmethod
+    def accelRequestFileUpload(cls):
+        try:
+            f = open('accelrequest.csv', 'rb')
+            files = {"file": f}
+            resp = requests.post(cls.url + '/file/upload/accel/request', files=files)
             print(resp.text)
             print("status code " + str(resp.status_code))
 
@@ -424,7 +449,7 @@ class RequestApi:
 if __name__ == "__main__":
     from RequestApi import RequestApi as api
 
-    api.setCompany()
+    # api.setCompany()
     # api.findCompany()
     # api.start()
     # api.addMeasureItems()
@@ -436,3 +461,5 @@ if __name__ == "__main__":
     # api.deleteFile()
     # api.fileSearch()
     # api.jsonTest()
+    api.slopeRequestFileUpload()
+    # api.accelRequestFileUpload()

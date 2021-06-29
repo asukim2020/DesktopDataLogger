@@ -254,7 +254,10 @@ Thumbs.db #thumbnail cache on Windows
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm
 accel.csv
-slope.csv
+python/serial/accel_request.csv
 trigger.csv
 triggerFile.csv
 setting.txt
+accel_request.csv
+accelrequest.csv
+sloperequest.csv

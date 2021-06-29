@@ -50,8 +50,8 @@ if __name__ == "__main__":
     SerialManager.instance = serial
     # serial.end()
 
-    # server = TCPServer()
-    # server.startServer()
+    server = TCPServer()
+    server.startServer()
 
     # from python.serial.TimeUtil import TimeUtil
     # t1 = TimeUtil.getNewTimeByLong()

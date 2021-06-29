@@ -27,8 +27,6 @@ class SerialManager:
     accelIntervalPerSec = 100
     slopeIntervalPerSec = 1
 
-    requestFlag = False
-
     def __init__(self):
         super().__init__()
 
@@ -42,10 +40,17 @@ class SerialManager:
         self.triggerFile = None
         self.triggerDiff = 0.0
 
-        self.requestFile = None
-        self.requestCount = 0
-        self.requestDiff = 0.0
-        self.requestFlag = False
+        self.slopeRequestFile = None
+        self.slopeRequestCount = 0
+        self.slopeRequestDiff = 0.0
+        self.slopeRequestCount = 0
+        self.slopeRequestSec = 10
+
+        self.accelRequestFile = None
+        self.accelRequestCount = 0
+        self.accelRequestDiff = 0.0
+        self.accelRequestCount = 0
+        self.accelRequestSec = 10
 
         self.accelItems = []
         self.accelCount = 1
@@ -117,6 +122,7 @@ class SerialManager:
                         self.slopeCount = 1
                         self.slopeTimeCheckCount += 1
                         self.slopeWriteFile(self.slopeFile, measureItem, self.slopeItems)
+                        self.slopeRequestWriteFile(self.slopeRequestFile, self.slopeItems)
 
                         if self.slopeTimeCheckCount >= SerialManager.slopeIntervalPerSec:
                             self.slopeTimeCheckCount = 0
@@ -124,12 +130,11 @@ class SerialManager:
                                 if self.slopeFile == None:
                                     api.setCompany()
                                     print("file open")
-                                    fileName = "slope.csv"
+                                    fileName = "accel_request.csv"
                                     interval = format(1/SerialManager.slopeIntervalPerSec, ".2f")
-                                    self.slopeFile = open("slope.csv", 'w')
+                                    self.slopeFile = open("accel_request.csv", 'w')
                                     self.slopeDiff = 0.0
                                     self.writeFileHeader(self.slopeFile, fileName, interval, True)
-                                    self.slopeBufferDataWriteFile(self.slopeFile, self.slopeItems)
                                     print("정시 측정 시작")
                             else:
                                 if self.slopeFile != None:
@@ -139,6 +144,10 @@ class SerialManager:
                                     print("정시 측정 종료")
                                     api.slopeFileUpload()
 
+                        # request
+                        if self.slopeRequestFile != None:
+                            if self.slopeRequestCount >= (self.slopeRequestSec * SerialManager.slopeIntervalPerSec):
+                                self.closeSlopeRequestFile()
 
                     else:
                         self.slopeCount += 1
@@ -151,6 +160,7 @@ class SerialManager:
                         self.accelCount = 1
                         self.accelTimeCheckCount += 1
                         self.accelWriteFile(self.accelFile, measureItem, self.accelItems)
+                        self.accelRequestWriteFile(self.accelRequestFile, self.accelItems)
 
                         # trigger check
                         if int(data[2]) < SerialManager.abnormalData \
@@ -183,16 +193,10 @@ class SerialManager:
                                     self.triggerFile = None
                                     api.triggerFileUpload()
 
-                        # if SerialManager.requestFlag:
-                        #     self.requestCount += 1
-                        #
-                        #     if self.requestCount > self.accelSaveCount \
-                        #             and SerialManager.requestFlag:
-                        #         print("지진 종료")
-                        #         SerialManager.requestFlag = False
-                        #         self.writeFileHeader(self.requestFile, fileName, interval, False)
-                        #         self.requestBufferDataWriteFile(self.accelFile, self.accelItems)
-                        #         self.requestCount = 0
+                        # request
+                        if self.accelRequestFile != None:
+                            if self.accelRequestCount >= (self.accelRequestSec * SerialManager.accelIntervalPerSec):
+                                self.closeAccelRequestFile()
 
                         if self.accelTimeCheckCount >= SerialManager.accelIntervalPerSec:
                             if TimeUtil.checkAClock(SerialManager.accelMeasureHour, SerialManager.accelMeasureMin):
@@ -284,7 +288,7 @@ class SerialManager:
 
         self.writeFile(file, time, self.triggerDiff, data)
 
-    def requestWriteFile(self, file, items):
+    def slopeRequestWriteFile(self, file, items):
         if file == None:
             return
 
@@ -297,9 +301,28 @@ class SerialManager:
         lenItems = len(items)
 
         if lenItems > 0:
-            self.requestDiff += float(items[lenItem - 1]["time"] - items[lenItems - 2]["time"]) / 1000.0
+            self.slopeRequestDiff += float(items[lenItem - 1]["time"] - items[lenItems - 2]["time"]) / 1000.0
 
-        self.writeFile(file, time, self.requestDiff, data)
+        self.writeFile(file, time, self.slopeRequestDiff, data)
+        self.slopeRequestCount +=1
+
+    def accelRequestWriteFile(self, file, items):
+        if file == None:
+            return
+
+        lenItem = len(items)
+
+        if lenItem < 2: return
+
+        time = items[lenItem - 1]["time"]
+        data = items[lenItem - 1]["data"]
+        lenItems = len(items)
+
+        if lenItems > 0:
+            self.accelRequestDiff += float(items[lenItem - 1]["time"] - items[lenItems - 2]["time"]) / 1000.0
+
+        self.writeFile(file, time, self.accelRequestDiff, data)
+        self.accelRequestCount += 1
 
     def writeFile(self, file, time, diff, data):
         try:
@@ -349,6 +372,38 @@ class SerialManager:
         except Exception as e:
             print(e)
 
+    def createSlopeRequestFile(self):
+        if self.slopeRequestFile == None:
+            self.slopeDiff = 0
+            self.slopeRequestCount = 0
+
+            fileName = 'sloperequest.csv'
+            self.slopeRequestFile = open(fileName, 'w')
+            interval = format(1 / SerialManager.slopeIntervalPerSec, ".2f")
+            self.writeFileHeader(self.slopeRequestFile, fileName, interval, True)
+
+    def createAccelRequestFile(self):
+        if self.accelRequestFile == None:
+            self.accelDiff = 0
+            self.accelRequestCount = 0
+
+            fileName = 'accelrequest.csv'
+            self.accelRequestFile = open(fileName, 'w')
+            interval = format(1 / SerialManager.accelIntervalPerSec, ".2f")
+            self.writeFileHeader(self.accelRequestFile, fileName, interval, False)
+
+    def closeSlopeRequestFile(self):
+        if self.slopeRequestFile != None:
+            self.slopeRequestFile.close()
+            self.slopeRequestFile = None
+            api.slopeRequestFileUpload()
+
+    def closeAccelRequestFile(self):
+        if self.accelRequestFile != None:
+            self.accelRequestFile.close()
+            self.accelRequestFile = None
+            api.accelRequestFileUpload()
+
     def slopeBufferDataWriteFile(self, file, items):
         for idx in range(0, len(items)):
 
@@ -379,15 +434,15 @@ class SerialManager:
                 self.triggerDiff += float(time - items[idx - 1]["time"]) / 1000.0
             self.writeFile(file, time, self.triggerDiff, data)
 
-    def requestBufferDataWriteFile(self, file, items):
-        for idx in range(0, len(items)):
-
-            time = items[idx]["time"]
-            data = items[idx]["data"]
-
-            if idx > 0:
-                self.requestDiff += float(time - items[idx - 1]["time"]) / 1000.0
-            self.writeFile(file, time, self.requestDiff, data)
+    # def requestBufferDataWriteFile(self, file, items):
+    #     for idx in range(0, len(items)):
+    #
+    #         time = items[idx]["time"]
+    #         data = items[idx]["data"]
+    #
+    #         if idx > 0:
+    #             self.requestDiff += float(time - items[idx - 1]["time"]) / 1000.0
+    #         self.writeFile(file, time, self.requestDiff, data)
 
     @classmethod
     def setSettingData(
