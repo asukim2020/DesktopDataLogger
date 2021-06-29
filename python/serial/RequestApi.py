@@ -461,5 +461,5 @@ if __name__ == "__main__":
     # api.deleteFile()
     # api.fileSearch()
     # api.jsonTest()
-    api.slopeRequestFileUpload()
+    # api.slopeRequestFileUpload()
     # api.accelRequestFileUpload()
