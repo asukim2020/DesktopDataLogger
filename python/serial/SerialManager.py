@@ -18,8 +18,8 @@ class SerialManager:
 
     abnormalData = 0
 
-    accelMeasureHour = 2
-    slopeMeasureHour = 2
+    accelMeasureHour = 1
+    slopeMeasureHour = 1
 
     accelMeasureMin = 10
     slopeMeasureMin = 10
@@ -165,7 +165,6 @@ class SerialManager:
                                 fileName = "trigger.csv"
                                 interval = format(1 / SerialManager.accelIntervalPerSec, ".2f")
                                 self.writeFileHeader(self.triggerFile, fileName, interval, False)
-                                self.triggerBufferDataWriteFile(self.triggerFile, self.accelItems)
 
                         # trigger save
                         if self.triggerFlag:
@@ -204,7 +203,6 @@ class SerialManager:
                                     fileName = "accel.csv"
                                     interval = format(1/SerialManager.accelIntervalPerSec, ".2f")
                                     self.writeFileHeader(self.accelFile, fileName, interval, False)
-                                    self.accelBufferDataWriteFile(self.accelFile, self.accelItems)
                                     print("정시 측정 시작")
                             else:
                                 if self.accelFile != None:

@@ -367,7 +367,6 @@ class RequestApi:
     @classmethod
     def deleteFile(cls):
         try:
-            time = TimeUtil.getNewTimeByLong()
             response = requests.post(cls.url + '/file/delete')
             print(response)
         except requests.exceptions.HTTPError as errh:
@@ -425,7 +424,7 @@ class RequestApi:
 if __name__ == "__main__":
     from RequestApi import RequestApi as api
 
-    # api.setCompany()
+    api.setCompany()
     # api.findCompany()
     # api.start()
     # api.addMeasureItems()
@@ -436,4 +435,4 @@ if __name__ == "__main__":
     # api.fileDownload()
     # api.deleteFile()
     # api.fileSearch()
-    api.jsonTest()
+    # api.jsonTest()
