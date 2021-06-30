@@ -175,6 +175,7 @@ class SerialManager:
                                 fileName = "trigger.csv"
                                 interval = format(1 / SerialManager.accelIntervalPerSec, ".2f")
                                 self.writeFileHeader(self.triggerFile, fileName, interval, False)
+                                self.triggerBufferDataWriteFile(self.triggerFile, self.accelItems)
 
                         # trigger save
                         if self.triggerFlag:
