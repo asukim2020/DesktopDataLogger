@@ -31,6 +31,7 @@ import datetime
 from python.serial.SerialManager import SerialManager
 from python.serial.TCPServer import TCPServer
 from python.serial.RequestApi import RequestApi as api
+from python.serial.TimeUtil import TimeUtil
 
 if __name__ == "__main__":
     import socket
@@ -48,6 +49,7 @@ if __name__ == "__main__":
     # serial.saveSettingData()
     serial.getSettingData()
     serial.start()
+    TimeUtil.getSettingData()
     SerialManager.instance = serial
     # serial.end()
 

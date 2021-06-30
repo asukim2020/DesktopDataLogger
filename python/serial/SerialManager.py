@@ -9,20 +9,21 @@ from python.serial.TimeUtil import TimeUtil
 
 class SerialManager:
     # port = "/dev/ttyS0"
-    port = "/dev/ttyAMA0"
-    # port = "COM1"
+    # port = "/dev/ttyAMA0"
+    port = "COM1"
     baud = 38400
     saveBufferTime = 30
 
     instance = None
 
-    abnormalData = 0
+    abnormalDataMax = 3.5
+    abnormalDataMin = 1
 
     accelMeasureHour = 1
     slopeMeasureHour = 1
 
-    accelMeasureMin = 10
-    slopeMeasureMin = 10
+    accelMeasureMin = 5
+    slopeMeasureMin = 5
 
     accelIntervalPerSec = 100
     slopeIntervalPerSec = 1
@@ -163,7 +164,7 @@ class SerialManager:
                         self.accelRequestWriteFile(self.accelRequestFile, self.accelItems)
 
                         # trigger check
-                        if int(data[2]) < SerialManager.abnormalData \
+                        if SerialManager.abnormalDataMin < int(data[2]) < SerialManager.abnormalDataMax \
                                 and not self.triggerFlag:
                             self.triggerFlag = True
                             print("지진 발생")
@@ -446,32 +447,11 @@ class SerialManager:
     #         self.writeFile(file, time, self.requestDiff, data)
 
     @classmethod
-    def setSettingData(
-            cls,
-            abnormalData,
-            accelMeasureHour,
-            slopeMeasureHour,
-            accelMeasureMin,
-            slopeMeasureMin,
-            accelIntervalPerSec,
-            slopeIntervalPerSec
-    ):
-        SerialManager.abnormalData = abnormalData
-
-        SerialManager.accelMeasureHour = accelMeasureHour
-        SerialManager.slopeMeasureHour = slopeMeasureHour
-
-        SerialManager.accelMeasureMin = accelMeasureMin
-        SerialManager.slopeMeasureMin = slopeMeasureMin
-
-        SerialManager.accelIntervalPerSec = accelIntervalPerSec
-        SerialManager.slopeIntervalPerSec = slopeIntervalPerSec
-
-    @classmethod
     def saveSettingData(self):
         try:
             dic = {}
-            dic["abnormalData"] = SerialManager.abnormalData
+            dic["abnormalDataMin"] = SerialManager.abnormalDataMin
+            dic["abnormalDataMax"] = SerialManager.abnormalDataMax
 
             dic["accelMeasureHour"] = SerialManager.accelMeasureHour
             dic["slopeMeasureHour"] = SerialManager.slopeMeasureHour
@@ -487,7 +467,8 @@ class SerialManager:
             settingFile.write(jsonString)
             settingFile.close()
 
-            print("abnormalData: %d" % SerialManager.abnormalData)
+            print("abnormalDataMin: %d" % SerialManager.abnormalDataMin)
+            print("abnormalDataMax: %d" % SerialManager.abnormalDataMax)
 
             print("accelMeasureHour: %d" % SerialManager.accelMeasureHour)
             print("slopeMeasureHour: %d" % SerialManager.slopeMeasureHour)
@@ -514,7 +495,8 @@ class SerialManager:
 
             dic = json.loads(jsonString)
 
-            SerialManager.abnormalData = dic["abnormalData"]
+            SerialManager.abnormalDataMin = dic["abnormalDataMin"]
+            SerialManager.abnormalDataMax = dic["abnormalDataMax"]
 
             SerialManager.accelMeasureHour = dic["accelMeasureHour"]
             SerialManager.slopeMeasureHour = dic["slopeMeasureHour"]
@@ -527,7 +509,8 @@ class SerialManager:
 
             settingFile.close()
 
-            print("abnormalData: %d"%SerialManager.abnormalData)
+            print("abnormalDataMin: %d" % SerialManager.abnormalDataMin)
+            print("abnormalDataMax: %d" % SerialManager.abnormalDataMax)
 
             print("accelMeasureHour: %d" % SerialManager.accelMeasureHour)
             print("slopeMeasureHour: %d" % SerialManager.slopeMeasureHour)
@@ -540,7 +523,13 @@ class SerialManager:
         except Exception as e:
             print(e)
 
+    @classmethod
+    def getStandardAClock(cls):
+        return SerialManager.standardAClock
 
+    @classmethod
+    def getStandardAMin(cls):
+        return SerialManager.standardAMin
 
     def end(self):
         self.exitMeasureThread = False

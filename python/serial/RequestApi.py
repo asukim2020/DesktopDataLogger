@@ -450,7 +450,7 @@ if __name__ == "__main__":
     from RequestApi import RequestApi as api
 
     # api.setCompany()
-    # api.findCompany()
+    api.findCompany()
     # api.start()
     # api.addMeasureItems()
     # api.getMeasureItems()

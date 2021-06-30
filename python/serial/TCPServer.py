@@ -3,6 +3,7 @@ import sys
 import threading
 
 from python.serial.SerialManager import SerialManager
+from python.serial.TimeUtil import TimeUtil
 
 
 class TCPServer:
@@ -65,10 +66,14 @@ class TCPServer:
                 if chr(c) == '$':
                     tmp = ''.join(self.line)
                     self.line.clear()
+                    print("$ 발견: %s" % tmp)
+
+                    if '*' not in tmp:
+                        print('처리 불가: %s' % tmp)
+                        continue
 
                     idx = tmp.find('*')
                     tmp = tmp[idx:]
-                    print("$ 발견: %s" % tmp)
 
                     if '*RS' in tmp:
                         instance = SerialManager.instance
@@ -98,6 +103,64 @@ class TCPServer:
                             print(e)
 
                         print('createAccelRequestFile()')
+                    elif '*A' in tmp:
+                        tmp = tmp.replace('*A', '')
+                        tmp = tmp.replace('$', '')
+                        list = tmp.split('_')
+                        try:
+                            if len(list) == 3:
+                                SerialManager.accelMeasureHour = int(list[0])
+                                SerialManager.accelMeasureMin = int(list[1])
+                                SerialManager.accelIntervalPerSec = int(list[2])
+                                SerialManager.saveSettingData()
+                        except Exception as e:
+                            print(e)
+
+                        print('가속도 센서 시간 지정')
+                    elif '*S' in tmp:
+                        tmp = tmp.replace('*S', '')
+                        tmp = tmp.replace('$', '')
+                        list = tmp.split('_')
+                        try:
+                            if len(list) == 3:
+                                SerialManager.slopeMeasureHour = int(list[0])
+                                SerialManager.slopeMeasureMin = int(list[1])
+                                SerialManager.slopeIntervalPerSec = int(list[2])
+                                SerialManager.saveSettingData()
+                        except Exception as e:
+                            print(e)
+                        print('경사 센서 시간 지정')
+                    elif '*T' in tmp:
+                        tmp = tmp.replace('*T', '')
+                        tmp = tmp.replace('$', '')
+                        list = tmp.split('_')
+                        try:
+                            if len(list) == 2:
+                                SerialManager.abnormalDataMax = 3.5
+                                SerialManager.abnormalDataMin = 1
+                                SerialManager.abnormalDataMin = int(list[0])
+                                SerialManager.abnormalDataMax = int(list[1])
+                                SerialManager.saveSettingData()
+                        except Exception as e:
+                            print(e)
+                        print('트리거 레벨 설정')
+                    elif '*C' in tmp:
+                        SerialManager.abnormalDataMax = 0
+                        tmp = tmp.replace('*C', '')
+                        tmp = tmp.replace('$', '')
+                        list = tmp.split('_')
+                        try:
+                            if len(list) == 2:
+                                TimeUtil.standardHour = 0
+                                TimeUtil.standardMin = 0
+                                TimeUtil.standardHour = int(list[0])
+                                TimeUtil.standardMin = int(list[1])
+                                TimeUtil.saveSettingData()
+                        except Exception as e:
+                            print(e)
+                        print('기준시 설정')
+                    else:
+                        print('처리 불가: %s' % tmp)
 
             # conn.sendall(reply)
             # print(data)
@@ -111,3 +174,12 @@ class TCPServer:
 if __name__ == "__main__":
     server = TCPServer()
     server.startServer()
+
+    # tmp = "*A4_5_100$"
+    # tmp = tmp.replace('*A', '')
+    # tmp = tmp.replace('$', '')
+    # list = tmp.split('_')
+    # print(list)
+    # print(list[0])
+    # print(list[1])
+    # print(list[2])

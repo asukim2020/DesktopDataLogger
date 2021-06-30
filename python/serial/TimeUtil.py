@@ -1,8 +1,12 @@
+import json
 import time
 import datetime as dt
 
 
 class TimeUtil:
+
+    standardHour = 0
+    standardMin = 0
 
     @classmethod
     def getNewTimeByLong(cls):
@@ -68,30 +72,66 @@ class TimeUtil:
 
     @classmethod
     def checkAClock(cls, hour, maxMin):
-        # TODO: - 테스트 코드 지울 것
-        # TimeUtil.count += 1
-        # if 3000 < TimeUtil.count < 6000:
-        #     return True
-        # else:
-        #     return False
         t = TimeUtil.getNewTimeByLong()
-        # hour = t %
-        min = (t % 3600000) / 60000
-        if int((((t % 86400000) / 3600000) + 9) % 24) % hour == 0\
+        min = ((t % 3600000) / 60000) - TimeUtil.standardMin
+
+        if int((((t % 86400000) / 3600000) + 9 - TimeUtil.standardHour) % 24) % hour == 0\
             and 0 <= min <= maxMin:
             return True
         else:
             return False
 
+    @classmethod
+    def getSettingData(self):
+        try:
+            settingFile = open("standard_setting.txt", 'r')
+            jsonStringList = []
+            while True:
+                line = settingFile.readline()
+                if not line: break
+                jsonStringList.append(line)
+
+            jsonString = ''.join(jsonStringList)
+
+            dic = json.loads(jsonString)
+
+            TimeUtil.standardHour = dic["standardHour"]
+            TimeUtil.standardMin = dic["standardMin"]
+
+            settingFile.close()
+
+            print("standardHour: %d" % TimeUtil.standardHour)
+            print("standardAMin: %d" % TimeUtil.standardMin)
+        except Exception as e:
+            print(e)
+
+    @classmethod
+    def saveSettingData(self):
+        try:
+            dic = {}
+            dic["standardHour"] = TimeUtil.standardHour
+            dic["standardMin"] = TimeUtil.standardMin
+
+            settingFile = open("standard_setting.txt", 'w')
+            jsonString = json.dumps(dic)
+            settingFile.write(jsonString)
+            settingFile.close()
+
+            print("standardHour: %d" % TimeUtil.standardHour)
+            print("standardMin: %d" % TimeUtil.standardMin)
+        except Exception as e:
+            print(e)
+
+
 # test
 if __name__ == "__main__":
-    # t = TimeUtil.getNewTimeByLong()
-    # print(int((((t % 86400000) / 3600000) + 9) % 24))
-    # print((t % 3600000) / 60000)
+    t = TimeUtil.getNewTimeByLong()
+    print(int((((t % 86400000) / 3600000) + 9 - TimeUtil.standardHour) % 24) % 12)
+    print((t % 3600000) / 60000)
     # date = TimeUtil.getDate(2021, 6, 24)
     # print(TimeUtil.dateToLong(date))
     # print(TimeUtil.getDate(2021, 6, 24))
 
-    print(TimeUtil.checkAClock(1, 5))
+    # print(TimeUtil.checkAClock(1, 5))
 
 
