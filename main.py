@@ -28,6 +28,7 @@ import datetime as dt
 import time
 import datetime
 
+from python.serial.MeasureSetting import MeasureSetting
 from python.serial.SerialManager import SerialManager
 from python.serial.TCPServer import TCPServer
 from python.serial.RequestApi import RequestApi as api
@@ -47,15 +48,17 @@ if __name__ == "__main__":
 
     serial = SerialManager()
     # serial.saveSettingData()
-    serial.getSettingData()
+    # serial.getSettingData()
     serial.start()
-    TimeUtil.getSettingData()
+    # TimeUtil.getSettingData()
     SerialManager.instance = serial
     # serial.end()
 
-    server = TCPServer()
-    server.startServer()
-    api.setCompany()
+    # server = TCPServer()
+    # server.startServer()
+
+    setting = MeasureSetting()
+    setting.start()
 
     # from python.serial.TimeUtil import TimeUtil
     # t1 = TimeUtil.getNewTimeByLong()

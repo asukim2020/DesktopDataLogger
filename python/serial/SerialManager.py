@@ -230,7 +230,6 @@ class SerialManager:
                 # api.addMeasureItems(copyItems)
                 # self.items.clear()
 
-    # TODO: - measure을 서로 다르게해서 업로드할 것
     # def uploadAccelMeasureItems(self):
     #     print("uploadAccelMeasureItems")
     #     copyItems = copy.deepcopy(self.accelItems)

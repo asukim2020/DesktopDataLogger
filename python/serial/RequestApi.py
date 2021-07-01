@@ -3,16 +3,11 @@ from io import StringIO
 import requests
 import json
 
-
-# TODO: - 라즈베리에서 15.csv 파일을 받아 업로드 해서 속도가 얼만나 나오는지 테스트
-# TODO: - 즉, 모뎀의 인터넷 속도가 얼마인지 알아보기
-
-# TODO: - 초당 100 개 인 경우 받
 from python.serial.TimeUtil import TimeUtil
 
 
 class RequestApi:
-    url = 'http://3.37.113.193:8080/'
+    url = 'http://3.37.113.193:8080'
     # url = 'http://localhost:8080'
 
     def __init__(self):
@@ -407,14 +402,13 @@ class RequestApi:
     def fileSearch(cls):
         try:
             # http://localhost:8080/downloadFile/%EC%95%84%EC%9D%B4%EC%BD%98.png
-            time = TimeUtil.getNewTimeByLong()
             startOfDay = TimeUtil.getNewDate()
             startOfDay = TimeUtil.startOfDay(startOfDay)
             endOfDay = TimeUtil.getNewDate()
             endOfDay = TimeUtil.endOfDay(endOfDay)
 
             query = {
-                'type': "trigger",
+                'type': "accel",
                 'startTime': TimeUtil.dateToLong(startOfDay),
                 'endTime': TimeUtil.dateToLong(endOfDay)
             }
@@ -444,13 +438,113 @@ class RequestApi:
         # print(json_data['measureId'])
         # print(json_data['name'])
 
+    @classmethod
+    def setSetting(cls):
+        try:
+            query = {
+                'accel': '1_5_100',
+                'slope': '1_5_1',
+                'triggerLevel': '1_3.5',
+                'standardTime': '0_0',
+                'request': '*RA10$'
+            }
+            response = requests.post(cls.url + '/measure/post/setting', params=query)
+            print(response.text)
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+
+    @classmethod
+    def getSetting(cls):
+        from python.serial.SerialManager import SerialManager
+        try:
+            response = requests.get(cls.url + '/measure/get/setting')
+            jstr = response.text
+            print(jstr)
+            dic = json.loads(jstr)
+
+            if (RequestApi.lastStringRequestTime >= dic['time']):
+                return
+
+            RequestApi.lastStringRequestTime = dic['time']
+            accelList = dic['accel'].split('_')
+            if len(accelList) == 3:
+                SerialManager.accelMeasureHour = int(accelList[0])
+                SerialManager.accelMeasureMin = int(accelList[1])
+                SerialManager.accelIntervalPerSec = int(accelList[2])
+                print('accel: %s'% dic['accel'])
+
+            slopeList = dic['slope'].split('_')
+            if len(slopeList) == 3:
+                SerialManager.slopeMeasureHour = int(slopeList[0])
+                SerialManager.slopeMeasureMin = int(slopeList[1])
+                SerialManager.slopeIntervalPerSec = int(slopeList[2])
+                print('slope: %s'% dic['slope'])
+
+            triggerList = dic['triggerLevel'].split('_')
+            if len(triggerList) == 2:
+                SerialManager.abnormalDataMin = int(triggerList[0])
+                SerialManager.abnormalDataMax = int(triggerList[1])
+                print('triggerLevel: %s'% dic['triggerLevel'])
+
+            timeList = dic['standardTime'].split('_')
+            if len(timeList) == 2:
+                TimeUtil.standardHour = int(timeList[0])
+                TimeUtil.standardMin = int(timeList[1])
+                print('standardTime: %s'% dic['standardTime'])
+
+            request = dic['request']
+            if '*RS' in request:
+                instance = SerialManager.instance
+                instance.createSlopeRequestFile()
+                request = request.replace('*RS', '')
+                request = request.replace('$', '')
+                request = request.replace('_', '')
+                try:
+                    sec = int(request)
+                    instance.slopeRequestSec = sec
+                except Exception as e:
+                    print(e)
+
+                print('createSlopeRequestFile()')
+            elif '*RA' in request:
+                instance = SerialManager.instance
+                instance.createAccelRequestFile()
+                request = request.replace('*RA', '')
+                request = request.replace('$', '')
+                request = request.replace('_', '')
+                try:
+                    sec = int(request)
+                    instance.accelRequestSec = sec
+                except Exception as e:
+                    print(e)
+
+                print('createAccelRequestFile()')
+
+
+        except requests.exceptions.HTTPError as errh:
+            print(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print(errc)
+        except requests.exceptions.Timeout as errt:
+            print(errt)
+        except requests.exceptions.RequestException as err:
+            print(err)
+        except Exception as e:
+            print(e)
+
 
 # Test Code
 if __name__ == "__main__":
     from RequestApi import RequestApi as api
 
     # api.setCompany()
-    api.findCompany()
+    # api.findCompany()
     # api.start()
     # api.addMeasureItems()
     # api.getMeasureItems()
@@ -459,7 +553,9 @@ if __name__ == "__main__":
     # api.fileUpload()
     # api.fileDownload()
     # api.deleteFile()
-    # api.fileSearch()
+    api.fileSearch()
     # api.jsonTest()
     # api.slopeRequestFileUpload()
     # api.accelRequestFileUpload()
+    # api.setSetting()
+    # api.getSetting()
