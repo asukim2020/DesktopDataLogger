@@ -53,6 +53,7 @@ if __name__ == "__main__":
     serial.start()
     # TimeUtil.getSettingData()
     SerialManager.instance = serial
+    api.setCompany()
     # serial.end()
 
     # server = TCPServer()

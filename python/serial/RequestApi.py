@@ -4,6 +4,7 @@ import requests
 import json
 
 from python.serial.TimeUtil import TimeUtil
+from python.serial.MeasureTerminal import MeasureTerminal
 
 
 class RequestApi:
@@ -28,6 +29,7 @@ class RequestApi:
             }
             response = requests.post(cls.url + '/measure/post/company', params=query)
             print(response.text)
+            MeasureTerminal.print(response.text)
         except requests.exceptions.HTTPError as errh:
             print(errh)
         except requests.exceptions.ConnectionError as errc:
@@ -47,6 +49,7 @@ class RequestApi:
             }
             response = requests.get(cls.url + '/measure/get/company/name', params=query)
             print(response.text)
+            MeasureTerminal.print(response.text)
         except requests.exceptions.HTTPError as errh:
             print(errh)
         except requests.exceptions.ConnectionError as errc:
@@ -478,6 +481,7 @@ class RequestApi:
                 SerialManager.accelMeasureMin = int(accelList[1])
                 SerialManager.accelIntervalPerSec = int(accelList[2])
                 print('accel: %s'% dic['accel'])
+                MeasureTerminal.print('accel: %s'% dic['accel'])
 
             slopeList = dic['slope'].split('_')
             if len(slopeList) == 3:
@@ -485,18 +489,21 @@ class RequestApi:
                 SerialManager.slopeMeasureMin = int(slopeList[1])
                 SerialManager.slopeIntervalPerSec = int(slopeList[2])
                 print('slope: %s'% dic['slope'])
+                MeasureTerminal.print('slope: %s'% dic['slope'])
 
             triggerList = dic['triggerLevel'].split('_')
             if len(triggerList) == 2:
                 SerialManager.abnormalDataMin = int(triggerList[0])
                 SerialManager.abnormalDataMax = int(triggerList[1])
                 print('triggerLevel: %s'% dic['triggerLevel'])
+                MeasureTerminal.print('triggerLevel: %s'% dic['triggerLevel'])
 
             timeList = dic['standardTime'].split('_')
             if len(timeList) == 2:
                 TimeUtil.standardHour = int(timeList[0])
                 TimeUtil.standardMin = int(timeList[1])
                 print('standardTime: %s'% dic['standardTime'])
+                MeasureTerminal.print('standardTime: %s'% dic['standardTime'])
 
             request = dic['request']
             if '*RS' in request:

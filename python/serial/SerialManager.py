@@ -11,8 +11,8 @@ from python.serial.TimeUtil import TimeUtil
 
 class SerialManager:
     # port = "/dev/ttyS0"
-    port = "/dev/ttyAMA0"
-    # port = "COM1"
+    # port = "/dev/ttyAMA0"
+    port = "COM1"
     baud = 38400
     saveBufferTime = 30
 
