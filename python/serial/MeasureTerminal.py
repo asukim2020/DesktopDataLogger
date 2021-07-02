@@ -25,5 +25,5 @@ class MeasureTerminal:
         )
         MeasureTerminal.textBox = textBox
         textBox.font = "arial"
-        # app.full_screen = True
+        app.full_screen = True
         app.display()
