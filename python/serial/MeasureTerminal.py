@@ -15,7 +15,8 @@ class MeasureTerminal:
 
     def display(self):
         sleep(15)
-        app = App(layout="auto")
+        app = App(layout="auto", height=800, width=480)
+        app.set_full_screen()
 
         textBox = TextBox(
             app,
@@ -28,5 +29,4 @@ class MeasureTerminal:
         )
         MeasureTerminal.textBox = textBox
         textBox.font = "arial"
-        app.full_screen = True
         app.display()
