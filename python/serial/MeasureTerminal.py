@@ -14,7 +14,7 @@ class MeasureTerminal:
 
 
     def display(self):
-        sleep(5)
+        sleep(15)
         app = App(layout="auto")
 
         textBox = TextBox(
