@@ -29,6 +29,7 @@ import time
 import datetime
 
 from python.serial.MeasureSetting import MeasureSetting
+from python.serial.MeasureTerminal import MeasureTerminal
 from python.serial.SerialManager import SerialManager
 from python.serial.TCPServer import TCPServer
 from python.serial.RequestApi import RequestApi as api
@@ -59,6 +60,8 @@ if __name__ == "__main__":
 
     setting = MeasureSetting()
     setting.start()
+
+    MeasureTerminal().display()
 
     # from python.serial.TimeUtil import TimeUtil
     # t1 = TimeUtil.getNewTimeByLong()

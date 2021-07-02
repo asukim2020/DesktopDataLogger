@@ -23,21 +23,7 @@ class MeasureTerminal:
             enabled=False,
             scrollbar=True
         )
-        MeasureTerminal = textBox
-        # change fonts to be one you like
+        MeasureTerminal.textBox = textBox
         textBox.font = "arial"
-        # ml_textbox.append("12345")
-        # ml_textbox.append("12345")
-        # ml_textbox.append("12345")
-        # ml_textbox.append("12345")
-        # ml_textbox.append("12345")
-        # ml_textbox.append("12345")
-        # ml_textbox.append("12345")
-        # ml_textbox.tk.see('end')
-        #
-        # ml_textbox.append("125")
-        # ml_textbox.append("124")
-        # ml_textbox.tk.see('end')
-
-        app.full_screen = True
+        # app.full_screen = True
         app.display()
