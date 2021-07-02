@@ -14,7 +14,6 @@ class MeasureTerminal:
 
 
     def display(self):
-        sleep(15)
         app = App(layout="auto", height=800, width=480)
         app.full_screen = True
 
