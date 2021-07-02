@@ -68,6 +68,9 @@ class MeasureSetting:
                 TimeUtil.standardMin = int(timeList[1])
                 print('standardTime: %s'% dic['standardTime'])
 
+            if MeasureSetting.lastStringRequestTime == 0:
+                return
+
             request = dic['request']
             if '*RS' in request:
                 instance = SerialManager.instance

@@ -1,3 +1,5 @@
+from time import sleep
+
 from guizero import App, TextBox
 
 class MeasureTerminal:
@@ -12,6 +14,7 @@ class MeasureTerminal:
 
 
     def display(self):
+        sleep(5)
         app = App(layout="auto")
 
         textBox = TextBox(
