@@ -4,7 +4,6 @@ import requests
 import json
 
 from python.serial.TimeUtil import TimeUtil
-from python.serial.MeasureTerminal import MeasureTerminal
 
 
 class RequestApi:
@@ -28,8 +27,7 @@ class RequestApi:
                 'ip': ip.text
             }
             response = requests.post(cls.url + '/measure/post/company', params=query)
-            print(response.text)
-            MeasureTerminal.print(response.text)
+            # print(response.text)
         except requests.exceptions.HTTPError as errh:
             print(errh)
         except requests.exceptions.ConnectionError as errc:
@@ -48,8 +46,7 @@ class RequestApi:
                 'name': 'NGI'
             }
             response = requests.get(cls.url + '/measure/get/company/name', params=query)
-            print(response.text)
-            MeasureTerminal.print(response.text)
+            # print(response.text)
         except requests.exceptions.HTTPError as errh:
             print(errh)
         except requests.exceptions.ConnectionError as errc:
@@ -216,14 +213,11 @@ class RequestApi:
             f = open('slope.csv', 'rb')
             files = {"file": f}
             resp = requests.post(cls.url + '/file/upload/slope', files=files)
-            print(resp.text)
-            print("status code " + str(resp.status_code))
 
             if resp.status_code == 200:
-                print("Success")
-                print(resp.json())
+                print("[경사센서 정시측정] 업로드 성공")
             else:
-                print("Failure")
+                print("[경사센서 정시측정] 실패")
 
             f.close()
         except requests.exceptions.HTTPError as errh:
@@ -241,14 +235,11 @@ class RequestApi:
             f = open('accel.csv', 'rb')
             files = {"file": f}
             resp = requests.post(cls.url + '/file/upload/accel', files=files)
-            print(resp.text)
-            print("status code " + str(resp.status_code))
 
             if resp.status_code == 200:
-                print("Success")
-                print(resp.json())
+                print("[가속도센서 정시측정] 업로드 성공")
             else:
-                print("Failure")
+                print("[가속도센서 정시측정] 실패")
 
             f.close()
         except requests.exceptions.HTTPError as errh:
@@ -266,14 +257,11 @@ class RequestApi:
             f = open('trigger.csv', 'rb')
             files = {"file": f}
             resp = requests.post(cls.url + '/file/upload/trigger', files=files)
-            print(resp.text)
-            print("status code " + str(resp.status_code))
 
             if resp.status_code == 200:
-                print("Success")
-                print(resp.json())
+                print("[트리거 측정] 업로드 성공")
             else:
-                print("Failure")
+                print("[트리거 측정] 업로드 실패")
 
             f.close()
         except requests.exceptions.HTTPError as errh:
@@ -291,14 +279,11 @@ class RequestApi:
             f = open('sloperequest.csv', 'rb')
             files = {"file": f}
             resp = requests.post(cls.url + '/file/upload/slope/request', files=files)
-            print(resp.text)
-            print("status code " + str(resp.status_code))
 
             if resp.status_code == 200:
-                print("Success")
-                print(resp.json())
+                print("[경사센서 요청측정] 업로드 성공")
             else:
-                print("Failure")
+                print("[경사센서 요청측정] 업로드 실패")
 
             f.close()
         except requests.exceptions.HTTPError as errh:
@@ -316,14 +301,11 @@ class RequestApi:
             f = open('accelrequest.csv', 'rb')
             files = {"file": f}
             resp = requests.post(cls.url + '/file/upload/accel/request', files=files)
-            print(resp.text)
-            print("status code " + str(resp.status_code))
 
             if resp.status_code == 200:
-                print("Success")
-                print(resp.json())
+                print("[가속도센서 요청측정] 업로드 성공")
             else:
-                print("Failure")
+                print("[가속도센서 요청측정] 업로드 실패")
 
             f.close()
         except requests.exceptions.HTTPError as errh:
@@ -391,7 +373,7 @@ class RequestApi:
     def deleteFile(cls):
         try:
             response = requests.post(cls.url + '/file/delete')
-            print(response)
+            # print(response)
         except requests.exceptions.HTTPError as errh:
             print(errh)
         except requests.exceptions.ConnectionError as errc:
@@ -481,7 +463,6 @@ class RequestApi:
                 SerialManager.accelMeasureMin = int(accelList[1])
                 SerialManager.accelIntervalPerSec = int(accelList[2])
                 print('accel: %s'% dic['accel'])
-                MeasureTerminal.print('accel: %s'% dic['accel'])
 
             slopeList = dic['slope'].split('_')
             if len(slopeList) == 3:
@@ -489,21 +470,18 @@ class RequestApi:
                 SerialManager.slopeMeasureMin = int(slopeList[1])
                 SerialManager.slopeIntervalPerSec = int(slopeList[2])
                 print('slope: %s'% dic['slope'])
-                MeasureTerminal.print('slope: %s'% dic['slope'])
 
             triggerList = dic['triggerLevel'].split('_')
             if len(triggerList) == 2:
                 SerialManager.abnormalXMin = int(triggerList[0])
                 SerialManager.abnormalXMax = int(triggerList[1])
                 print('triggerLevel: %s'% dic['triggerLevel'])
-                MeasureTerminal.print('triggerLevel: %s'% dic['triggerLevel'])
 
             timeList = dic['standardTime'].split('_')
             if len(timeList) == 2:
                 TimeUtil.standardHour = int(timeList[0])
                 TimeUtil.standardMin = int(timeList[1])
                 print('standardTime: %s'% dic['standardTime'])
-                MeasureTerminal.print('standardTime: %s'% dic['standardTime'])
 
             request = dic['request']
             if '*RS' in request:
@@ -517,7 +495,6 @@ class RequestApi:
                     instance.slopeRequestSec = sec
                 except Exception as e:
                     print(e)
-                MeasureTerminal.print('경사 센서 요청 측정 %d초'%sec)
                 print('createSlopeRequestFile()')
             elif '*RA' in request:
                 instance = SerialManager.instance
@@ -530,7 +507,6 @@ class RequestApi:
                     instance.accelRequestSec = sec
                 except Exception as e:
                     print(e)
-                MeasureTerminal.print('가속도 센서 요청 측정 %d초' % sec)
                 print('createAccelRequestFile()')
 
 
@@ -560,7 +536,7 @@ if __name__ == "__main__":
     # api.fileUpload()
     # api.fileDownload()
     # api.deleteFile()
-    api.fileSearch()
+    # api.fileSearch()
     # api.jsonTest()
     # api.slopeRequestFileUpload()
     # api.accelRequestFileUpload()

@@ -81,47 +81,6 @@ class TimeUtil:
         else:
             return False
 
-    @classmethod
-    def getSettingData(self):
-        try:
-            settingFile = open("standard_setting.txt", 'r')
-            jsonStringList = []
-            while True:
-                line = settingFile.readline()
-                if not line: break
-                jsonStringList.append(line)
-
-            jsonString = ''.join(jsonStringList)
-
-            dic = json.loads(jsonString)
-
-            TimeUtil.standardHour = dic["standardHour"]
-            TimeUtil.standardMin = dic["standardMin"]
-
-            settingFile.close()
-
-            print("standardHour: %d" % TimeUtil.standardHour)
-            print("standardAMin: %d" % TimeUtil.standardMin)
-        except Exception as e:
-            print(e)
-
-    @classmethod
-    def saveSettingData(self):
-        try:
-            dic = {}
-            dic["standardHour"] = TimeUtil.standardHour
-            dic["standardMin"] = TimeUtil.standardMin
-
-            settingFile = open("standard_setting.txt", 'w')
-            jsonString = json.dumps(dic)
-            settingFile.write(jsonString)
-            settingFile.close()
-
-            print("standardHour: %d" % TimeUtil.standardHour)
-            print("standardMin: %d" % TimeUtil.standardMin)
-        except Exception as e:
-            print(e)
-
 
 # test
 if __name__ == "__main__":

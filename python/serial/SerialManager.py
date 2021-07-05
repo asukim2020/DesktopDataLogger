@@ -4,7 +4,6 @@ import math
 import serial
 import threading
 
-from python.serial.MeasureTerminal import MeasureTerminal
 from python.serial.RequestApi import RequestApi as api
 
 from python.serial.TimeUtil import TimeUtil
@@ -12,8 +11,8 @@ from python.serial.TimeUtil import TimeUtil
 
 class SerialManager:
     # port = "/dev/ttyS0"
-    port = "/dev/ttyAMA0"
-    # port = "COM1"
+    # port = "/dev/ttyAMA0"
+    port = "COM1"
     baud = 38400
     saveBufferTime = 30
 
@@ -132,7 +131,6 @@ class SerialManager:
                         self.slopeSumX += int(data[4])
                         self.slopeSumY += int(data[5])
                         if self.slopeCount >= self.slopeInterval:
-                            # print("slopeItems.append")
                             avgX = self.slopeSumX / self.slopeInterval
                             avgY = self.slopeSumY / self.slopeInterval
                             self.slopeSumX = 0
@@ -155,19 +153,17 @@ class SerialManager:
                                     if self.slopeFile == None:
                                         api.setCompany()
                                         api.deleteFile()
-                                        print("file open")
                                         fileName = "slope.csv"
                                         interval = format(1 / SerialManager.slopeIntervalPerSec, ".2f")
                                         self.slopeFile = open(fileName, 'w')
                                         self.slopeDiff = 0.0
                                         self.writeFileHeader(self.slopeFile, fileName, interval, True, 2)
-                                        print("정시 측정 시작")
+                                        print("[경사센서 정시측정] 시작")
                                 else:
                                     if self.slopeFile != None:
-                                        print("file close")
                                         self.slopeFile.close()
                                         self.slopeFile = None
-                                        print("정시 측정 종료")
+                                        print("[경사센서 정시측정] 종료")
                                         api.slopeFileUpload()
 
                             # request
@@ -207,12 +203,10 @@ class SerialManager:
                                             and not self.triggerFlag:
 
                                 self.triggerFlag = True
-                                print("트리거 발생")
-                                MeasureTerminal.print('트리거 발생')
+                                print("[트리거 발생]")
                                 print('x: %d, y: %d, z: %d' % (x, y, z))
 
                                 if self.triggerFile == None:
-                                    print("file open")
                                     fileName = "trigger.csv"
                                     self.triggerFile = open(fileName, 'w')
                                     self.triggerDiff = 0.0
@@ -227,13 +221,11 @@ class SerialManager:
 
                                 if self.triggerCount > self.accelSaveCount \
                                         and self.triggerFlag:
-                                    print("트리거 측정 종료")
-                                    MeasureTerminal.print('트리거 측정 종료')
+                                    print("[트리거 측정 종료]")
                                     self.triggerFlag = False
                                     self.triggerCount = 0
 
                                     if self.triggerFile != None:
-                                        print("file close")
                                         self.triggerFile.close()
                                         self.triggerFile = None
                                         api.triggerFileUpload()
@@ -247,20 +239,18 @@ class SerialManager:
                                 self.accelTimeCheckCount = 0
                                 if TimeUtil.checkAClock(SerialManager.accelMeasureHour, SerialManager.accelMeasureMin):
                                     if self.accelFile == None:
-                                        print("file open")
                                         fileName = "accel.csv"
                                         self.accelFile = open(fileName, 'w')
                                         self.accelDiff = 0.0
                                         interval = format(1 / SerialManager.accelIntervalPerSec, ".2f")
                                         self.writeFileHeader(self.accelFile, fileName, interval, False, 3)
-                                        print("정시 측정 시작")
+                                        print("[가속도센서 정시측정] 시작")
                                 else:
                                     if self.accelFile != None:
-                                        print("file close")
                                         self.accelFile.close()
                                         self.accelFile = None
                                         api.accelFileUpload()
-                                        print("정시 측정 종료")
+                                        print("[가속도센서 정시측정] 종료")
 
                         else:
                             self.accelCount += 1
@@ -378,9 +368,19 @@ class SerialManager:
             writeString = ''.join(self.stringList)
             writeString = writeString.replace('\n', '')
             self.stringList.clear()
-            if isPrint:
-                MeasureTerminal.print(writeString)
-            print(writeString)
+            diff = round(diff, 2)
+            if diff % 1.0 == 0:
+                if file == self.slopeFile:
+                    print('[경사센서 정시측정]: ' + writeString)
+                elif file == self.accelFile:
+                    print('[가속도센서 정시측정]: ' + writeString)
+                elif file == self.triggerFile:
+                    print('[트리거 측정]: ' + writeString)
+                elif file == self.slopeRequestFile:
+                    print('[경사센서 요청측정]: ' + writeString)
+                elif file == self.accelRequestFile:
+                    print('[가속도센서 요청측정]: ' + writeString)
+
             file.write(writeString)
         except Exception as e:
             print(e)
@@ -417,7 +417,6 @@ class SerialManager:
                 headerList.append("Channel Number , 3\n")
                 headerList.append("DateTime , Elasped_Time(sec) , CH1 , CH2, CH3\n")
             writeString = ''.join(headerList)
-            print(writeString)
             file.write(writeString)
         except Exception as e:
             print(e)
@@ -454,26 +453,6 @@ class SerialManager:
             self.accelRequestFile = None
             api.accelRequestFileUpload()
 
-    # def slopeBufferDataWriteFile(self, file, items):
-    #     for idx in range(0, len(items)):
-    #
-    #         time = items[idx]["time"]
-    #         data = items[idx]["data"]
-    #
-    #         if idx > 0:
-    #             self.slopeDiff += float(time - items[idx - 1]["time"]) / 1000.0
-    #         self.writeFile(file, time, self.slopeDiff, data)
-    #
-    # def accelBufferDataWriteFile(self, file, items):
-    #     for idx in range(0, len(items)):
-    #
-    #         time = items[idx]["time"]
-    #         data = items[idx]["data"]
-    #
-    #         if idx > 0:
-    #             self.accelDiff += float(time - items[idx - 1]["time"]) / 1000.0
-    #         self.writeFile(file, time, self.accelDiff, data)
-
     def triggerBufferDataWriteFile(self, file, items):
         for idx in range(0, len(items)):
 
@@ -483,92 +462,6 @@ class SerialManager:
             self.triggerDiff += 1 / SerialManager.accelIntervalPerSec
             self.writeFile(file, time, self.triggerDiff, data)
 
-    # def requestBufferDataWriteFile(self, file, items):
-    #     for idx in range(0, len(items)):
-    #
-    #         time = items[idx]["time"]
-    #         data = items[idx]["data"]
-    #
-    #         if idx > 0:
-    #             self.requestDiff += float(time - items[idx - 1]["time"]) / 1000.0
-    #         self.writeFile(file, time, self.requestDiff, data)
-
-    @classmethod
-    def saveSettingData(self):
-        try:
-            dic = {}
-            dic["abnormalDataMin"] = SerialManager.abnormalXMin
-            dic["abnormalDataMax"] = SerialManager.abnormalXMax
-
-            dic["accelMeasureHour"] = SerialManager.accelMeasureHour
-            dic["slopeMeasureHour"] = SerialManager.slopeMeasureHour
-
-            dic["accelMeasureMin"] = SerialManager.accelMeasureMin
-            dic["slopeMeasureMin"] = SerialManager.slopeMeasureMin
-
-            dic["accelIntervalPerSec"] = SerialManager.accelIntervalPerSec
-            dic["slopeIntervalPerSec"] = SerialManager.slopeIntervalPerSec
-
-            settingFile = open("setting.txt", 'w')
-            jsonString = json.dumps(dic)
-            settingFile.write(jsonString)
-            settingFile.close()
-
-            print("abnormalDataMin: %d" % SerialManager.abnormalXMin)
-            print("abnormalDataMax: %d" % SerialManager.abnormalXMax)
-
-            print("accelMeasureHour: %d" % SerialManager.accelMeasureHour)
-            print("slopeMeasureHour: %d" % SerialManager.slopeMeasureHour)
-
-            print("accelMeasureMin: %d" % SerialManager.accelMeasureMin)
-            print("slopeMeasureMin: %d" % SerialManager.slopeMeasureMin)
-
-            print("accelIntervalPerSec: %d" % SerialManager.accelIntervalPerSec)
-            print("slopeIntervalPerSec: %d" % SerialManager.slopeIntervalPerSec)
-        except Exception as e:
-            print(e)
-
-    @classmethod
-    def getSettingData(self):
-        try:
-            settingFile = open("setting.txt", 'r')
-            jsonStringList = []
-            while True:
-                line = settingFile.readline()
-                if not line: break
-                jsonStringList.append(line)
-
-            jsonString = ''.join(jsonStringList)
-
-            dic = json.loads(jsonString)
-
-            SerialManager.abnormalXMin = dic["abnormalDataMin"]
-            SerialManager.abnormalXMax = dic["abnormalDataMax"]
-
-            SerialManager.accelMeasureHour = dic["accelMeasureHour"]
-            SerialManager.slopeMeasureHour = dic["slopeMeasureHour"]
-
-            SerialManager.accelMeasureMin = dic["accelMeasureMin"]
-            SerialManager.slopeMeasureMin = dic["slopeMeasureMin"]
-
-            SerialManager.accelIntervalPerSec = dic["accelIntervalPerSec"]
-            SerialManager.slopeIntervalPerSec = dic["slopeIntervalPerSec"]
-
-            settingFile.close()
-
-            print("abnormalDataMin: %d" % SerialManager.abnormalXMin)
-            print("abnormalDataMax: %d" % SerialManager.abnormalXMax)
-
-            print("accelMeasureHour: %d" % SerialManager.accelMeasureHour)
-            print("slopeMeasureHour: %d" % SerialManager.slopeMeasureHour)
-
-            print("accelMeasureMin: %d" % SerialManager.accelMeasureMin)
-            print("slopeMeasureMin: %d" % SerialManager.slopeMeasureMin)
-
-            print("accelIntervalPerSec: %d" % SerialManager.accelIntervalPerSec)
-            print("slopeIntervalPerSec: %d" % SerialManager.slopeIntervalPerSec)
-        except Exception as e:
-            print(e)
 
     @classmethod
     def getStandardAClock(cls):

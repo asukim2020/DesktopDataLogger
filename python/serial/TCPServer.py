@@ -112,7 +112,6 @@ class TCPServer:
                                 SerialManager.accelMeasureHour = int(list[0])
                                 SerialManager.accelMeasureMin = int(list[1])
                                 SerialManager.accelIntervalPerSec = int(list[2])
-                                SerialManager.saveSettingData()
                         except Exception as e:
                             print(e)
 
@@ -126,7 +125,6 @@ class TCPServer:
                                 SerialManager.slopeMeasureHour = int(list[0])
                                 SerialManager.slopeMeasureMin = int(list[1])
                                 SerialManager.slopeIntervalPerSec = int(list[2])
-                                SerialManager.saveSettingData()
                         except Exception as e:
                             print(e)
                         print('경사 센서 시간 지정')
@@ -140,7 +138,6 @@ class TCPServer:
                                 SerialManager.abnormalXMin = 1
                                 SerialManager.abnormalXMin = int(list[0])
                                 SerialManager.abnormalXMax = int(list[1])
-                                SerialManager.saveSettingData()
                         except Exception as e:
                             print(e)
                         print('트리거 레벨 설정')
@@ -155,7 +152,6 @@ class TCPServer:
                                 TimeUtil.standardMin = 0
                                 TimeUtil.standardHour = int(list[0])
                                 TimeUtil.standardMin = int(list[1])
-                                TimeUtil.saveSettingData()
                         except Exception as e:
                             print(e)
                         print('기준시 설정')

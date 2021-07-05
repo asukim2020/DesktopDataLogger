@@ -30,9 +30,7 @@ class MeasureSetting:
             if (MeasureSetting.lastStringRequestTime >= dic['time']):
                 return
 
-            print('getSetting')
-            print(jstr)
-            print('lastTime: %d'%MeasureSetting.lastStringRequestTime)
+            print('[측정 설정 반영]')
             accelList = dic['accel'].split('_')
             if len(accelList) == 3:
                 SerialManager.accelMeasureHour = int(accelList[0])
@@ -42,7 +40,7 @@ class MeasureSetting:
                 if instance == None: return
                 instance.accelInterval = 100 / SerialManager.accelIntervalPerSec
                 instance.accelSaveCount = SerialManager.saveBufferTime * SerialManager.accelIntervalPerSec
-                print('accel: %s'% dic['accel'])
+                print('[가속도센서] 설정: %d시간마다 %d분동안 초당%d개 측정'%(int(accelList[0]), int(accelList[1]), int(accelList[2])))
 
             slopeList = dic['slope'].split('_')
             if len(slopeList) == 3:
@@ -53,7 +51,7 @@ class MeasureSetting:
                 if instance == None: return
                 instance.slopeInterval = 100 / SerialManager.slopeIntervalPerSec
                 instance.slopeSaveCount = SerialManager.saveBufferTime * SerialManager.slopeIntervalPerSec
-                print('slope: %s'% dic['slope'])
+                print('[경사센서] 설정: %d시간마다 %d분동안 초당%d개 측정'%(int(slopeList[0]), int(slopeList[1]), int(slopeList[2])))
 
             triggerList = dic['triggerLevel'].split('_')
             if len(triggerList) == 6:
@@ -63,16 +61,17 @@ class MeasureSetting:
                 SerialManager.abnormalYMax = int(triggerList[3])
                 SerialManager.abnormalZMin = int(triggerList[4])
                 SerialManager.abnormalZMax = int(triggerList[5])
-                print('triggerLevel: %s'% dic['triggerLevel'])
+                print('[트리거 레벨] 설정: %d < x < %d, %d < y < %d, %d < z < %d' %(int(triggerList[0]), int(triggerList[1]), int(triggerList[2]), int(triggerList[3]), int(triggerList[4]), int(triggerList[5])))
 
             timeList = dic['standardTime'].split('_')
             if len(timeList) == 2:
                 TimeUtil.standardHour = int(timeList[0])
                 TimeUtil.standardMin = int(timeList[1])
-                print('standardTime: %s'% dic['standardTime'])
+                print('[기준시] 설정: %d시 %d분을 기준으로 측정 시작'%(int(timeList[0]), int(timeList[1])))
 
             if MeasureSetting.lastStringRequestTime == 0:
                 MeasureSetting.lastStringRequestTime = dic['time']
+                print('[측정 설정 반영 종료]')
                 return
 
             request = dic['request']
@@ -89,7 +88,7 @@ class MeasureSetting:
                 except Exception as e:
                     print(e)
 
-                print('createSlopeRequestFile()')
+                print('[경사센서 요청측정]: %d초 측정'%int(request))
             elif '*RA' in request:
                 instance = SerialManager.instance
                 if instance == None: return
@@ -103,10 +102,11 @@ class MeasureSetting:
                 except Exception as e:
                     print(e)
 
-                print('createAccelRequestFile()')
+                print('[가속도센서 요청측정]: %d초 측정'%int(request))
 
             MeasureSetting.lastStringRequestTime = dic['time']
 
+            print('[측정 설정 반영 종료]')
 
         except requests.exceptions.HTTPError as errh:
             print(errh)
