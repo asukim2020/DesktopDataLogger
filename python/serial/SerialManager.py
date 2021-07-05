@@ -12,8 +12,8 @@ from python.serial.TimeUtil import TimeUtil
 
 class SerialManager:
     # port = "/dev/ttyS0"
-    # port = "/dev/ttyAMA0"
-    port = "COM1"
+    port = "/dev/ttyAMA0"
+    # port = "COM1"
     baud = 38400
     saveBufferTime = 30
 
@@ -378,8 +378,8 @@ class SerialManager:
             writeString = ''.join(self.stringList)
             writeString = writeString.replace('\n', '')
             self.stringList.clear()
-            # if isPrint:
-            #     MeasureTerminal.print(writeString)
+            if isPrint:
+                MeasureTerminal.print(writeString)
             print(writeString)
             file.write(writeString)
         except Exception as e:

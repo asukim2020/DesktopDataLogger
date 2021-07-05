@@ -517,7 +517,7 @@ class RequestApi:
                     instance.slopeRequestSec = sec
                 except Exception as e:
                     print(e)
-
+                MeasureTerminal.print('경사 센서 요청 측정 %d초'%sec)
                 print('createSlopeRequestFile()')
             elif '*RA' in request:
                 instance = SerialManager.instance
@@ -530,7 +530,7 @@ class RequestApi:
                     instance.accelRequestSec = sec
                 except Exception as e:
                     print(e)
-
+                MeasureTerminal.print('가속도 센서 요청 측정 %d초' % sec)
                 print('createAccelRequestFile()')
 
 
