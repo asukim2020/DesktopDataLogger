@@ -136,16 +136,16 @@ class TCPServer:
                         list = tmp.split('_')
                         try:
                             if len(list) == 2:
-                                SerialManager.abnormalDataMax = 3.5
-                                SerialManager.abnormalDataMin = 1
-                                SerialManager.abnormalDataMin = int(list[0])
-                                SerialManager.abnormalDataMax = int(list[1])
+                                SerialManager.abnormalXMax = 3.5
+                                SerialManager.abnormalXMin = 1
+                                SerialManager.abnormalXMin = int(list[0])
+                                SerialManager.abnormalXMax = int(list[1])
                                 SerialManager.saveSettingData()
                         except Exception as e:
                             print(e)
                         print('트리거 레벨 설정')
                     elif '*C' in tmp:
-                        SerialManager.abnormalDataMax = 0
+                        SerialManager.abnormalXMax = 0
                         tmp = tmp.replace('*C', '')
                         tmp = tmp.replace('$', '')
                         list = tmp.split('_')

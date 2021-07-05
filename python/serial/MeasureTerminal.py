@@ -15,7 +15,7 @@ class MeasureTerminal:
 
     def display(self):
         app = App(layout="auto", height=800, width=480)
-        app.full_screen = True
+        # app.full_screen = True
 
         textBox = TextBox(
             app,

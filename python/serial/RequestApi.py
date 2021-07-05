@@ -213,7 +213,7 @@ class RequestApi:
     @classmethod
     def slopeFileUpload(cls):
         try:
-            f = open('accel_request.csv', 'rb')
+            f = open('slope.csv', 'rb')
             files = {"file": f}
             resp = requests.post(cls.url + '/file/upload/slope', files=files)
             print(resp.text)
@@ -468,12 +468,12 @@ class RequestApi:
         try:
             response = requests.get(cls.url + '/measure/get/setting')
             jstr = response.text
-            print(jstr)
             dic = json.loads(jstr)
 
             if (RequestApi.lastStringRequestTime >= dic['time']):
                 return
 
+            print(jstr)
             RequestApi.lastStringRequestTime = dic['time']
             accelList = dic['accel'].split('_')
             if len(accelList) == 3:
@@ -493,8 +493,8 @@ class RequestApi:
 
             triggerList = dic['triggerLevel'].split('_')
             if len(triggerList) == 2:
-                SerialManager.abnormalDataMin = int(triggerList[0])
-                SerialManager.abnormalDataMax = int(triggerList[1])
+                SerialManager.abnormalXMin = int(triggerList[0])
+                SerialManager.abnormalXMax = int(triggerList[1])
                 print('triggerLevel: %s'% dic['triggerLevel'])
                 MeasureTerminal.print('triggerLevel: %s'% dic['triggerLevel'])
 

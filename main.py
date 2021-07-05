@@ -62,7 +62,7 @@ if __name__ == "__main__":
     setting = MeasureSetting()
     setting.start()
 
-    MeasureTerminal().display()
+    # MeasureTerminal().display()
 
     # from python.serial.TimeUtil import TimeUtil
     # t1 = TimeUtil.getNewTimeByLong()

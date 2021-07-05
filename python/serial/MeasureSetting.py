@@ -20,19 +20,18 @@ class MeasureSetting:
 
     def getSetting(cls):
         time.sleep(5)
-        print('getSetting')
         from python.serial.SerialManager import SerialManager
         from python.serial.TimeUtil import TimeUtil
         try:
             response = requests.get(cls.url + '/measure/get/setting')
             jstr = response.text
-            print(jstr)
             dic = json.loads(jstr)
 
             if (MeasureSetting.lastStringRequestTime >= dic['time']):
                 return
 
-            MeasureSetting.lastStringRequestTime = dic['time']
+            print('getSetting')
+            print(jstr)
             print('lastTime: %d'%MeasureSetting.lastStringRequestTime)
             accelList = dic['accel'].split('_')
             if len(accelList) == 3:
@@ -57,9 +56,13 @@ class MeasureSetting:
                 print('slope: %s'% dic['slope'])
 
             triggerList = dic['triggerLevel'].split('_')
-            if len(triggerList) == 2:
-                SerialManager.abnormalDataMin = int(triggerList[0])
-                SerialManager.abnormalDataMax = int(triggerList[1])
+            if len(triggerList) == 6:
+                SerialManager.abnormalXMin = int(triggerList[0])
+                SerialManager.abnormalXMax = int(triggerList[1])
+                SerialManager.abnormalYMin = int(triggerList[2])
+                SerialManager.abnormalYMax = int(triggerList[3])
+                SerialManager.abnormalZMin = int(triggerList[4])
+                SerialManager.abnormalZMax = int(triggerList[5])
                 print('triggerLevel: %s'% dic['triggerLevel'])
 
             timeList = dic['standardTime'].split('_')
@@ -69,6 +72,7 @@ class MeasureSetting:
                 print('standardTime: %s'% dic['standardTime'])
 
             if MeasureSetting.lastStringRequestTime == 0:
+                MeasureSetting.lastStringRequestTime = dic['time']
                 return
 
             request = dic['request']
@@ -100,6 +104,8 @@ class MeasureSetting:
                     print(e)
 
                 print('createAccelRequestFile()')
+
+            MeasureSetting.lastStringRequestTime = dic['time']
 
 
         except requests.exceptions.HTTPError as errh:
