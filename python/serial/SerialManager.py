@@ -249,8 +249,8 @@ class SerialManager:
                                     if self.accelFile != None:
                                         self.accelFile.close()
                                         self.accelFile = None
-                                        api.accelFileUpload()
                                         print("[가속도센서 정시측정] 종료")
+                                        api.accelFileUpload()
 
                         else:
                             self.accelCount += 1
