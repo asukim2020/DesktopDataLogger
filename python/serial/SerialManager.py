@@ -11,8 +11,8 @@ from python.serial.TimeUtil import TimeUtil
 
 class SerialManager:
     # port = "/dev/ttyS0"
-    # port = "/dev/ttyAMA0"
-    port = "COM1"
+    port = "/dev/ttyAMA0"
+    # port = "COM1"
     baud = 38400
     saveBufferTime = 30
 
@@ -219,7 +219,7 @@ class SerialManager:
                                 self.triggerCount += 1
                                 self.triggerWriteFile(self.triggerFile, self.accelItems, self.accelTimeCheckCount >= SerialManager.accelIntervalPerSec)
 
-                                if self.triggerCount > self.accelSaveCount \
+                                if self.triggerCount >= self.accelSaveCount - 1 \
                                         and self.triggerFlag:
                                     print("[트리거 측정 종료]")
                                     self.triggerFlag = False
