@@ -45,7 +45,7 @@ if __name__ == "__main__":
     # Linux add path
     import sys
     sys.path.append("/home/pi/Documents/DesktopDataLogger/python/serial")
-    print(sys.path)
+    # print(sys.path)
 
     serial = SerialManager()
     # serial.saveSettingData()
