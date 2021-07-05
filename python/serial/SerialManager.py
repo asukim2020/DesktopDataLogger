@@ -369,7 +369,7 @@ class SerialManager:
             writeString = writeString.replace('\n', '')
             self.stringList.clear()
             diff = round(diff, 2)
-            if diff % 1.0 == 0:
+            if diff % 10.0 == 0:
                 if file == self.slopeFile:
                     print('[경사센서 정시측정]: ' + writeString)
                 elif file == self.accelFile:
