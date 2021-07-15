@@ -30,14 +30,15 @@ class MeasureSetting:
             if (MeasureSetting.lastStringRequestTime >= dic['time']):
                 return
 
+            instance = SerialManager.instance
+            if instance == None: return
+
             print('[측정 설정 반영]')
             accelList = dic['accel'].split('_')
             if len(accelList) == 3:
                 SerialManager.accelMeasureHour = int(accelList[0])
                 SerialManager.accelMeasureMin = int(accelList[1])
                 SerialManager.accelIntervalPerSec = int(accelList[2])
-                instance = SerialManager.instance
-                if instance == None: return
                 instance.accelInterval = 100 / SerialManager.accelIntervalPerSec
                 instance.accelSaveCount = SerialManager.saveBufferTime * SerialManager.accelIntervalPerSec
                 print('[가속도센서] 설정: %d시간마다 %d분동안 초당%d개 측정'%(int(accelList[0]), int(accelList[1]), int(accelList[2])))
@@ -47,8 +48,6 @@ class MeasureSetting:
                 SerialManager.slopeMeasureHour = int(slopeList[0])
                 SerialManager.slopeMeasureMin = int(slopeList[1])
                 SerialManager.slopeIntervalPerSec = int(slopeList[2])
-                instance = SerialManager.instance
-                if instance == None: return
                 instance.slopeInterval = 100 / SerialManager.slopeIntervalPerSec
                 instance.slopeSaveCount = SerialManager.saveBufferTime * SerialManager.slopeIntervalPerSec
                 print('[경사센서] 설정: %d시간마다 %d분동안 초당%d개 측정'%(int(slopeList[0]), int(slopeList[1]), int(slopeList[2])))
@@ -63,6 +62,20 @@ class MeasureSetting:
                 SerialManager.abnormalZMax = int(triggerList[5])
                 print('[트리거 레벨] 설정: %d < x < %d, %d < y < %d, %d < z < %d' %(int(triggerList[0]), int(triggerList[1]), int(triggerList[2]), int(triggerList[3]), int(triggerList[4]), int(triggerList[5])))
 
+            elif len(triggerList) == 7:
+                SerialManager.abnormalXMin = int(triggerList[0])
+                SerialManager.abnormalXMax = int(triggerList[1])
+                SerialManager.abnormalYMin = int(triggerList[2])
+                SerialManager.abnormalYMax = int(triggerList[3])
+                SerialManager.abnormalZMin = int(triggerList[4])
+                SerialManager.abnormalZMax = int(triggerList[5])
+                SerialManager.saveBufferTime = int(triggerList[6])
+
+                instance.accelSaveCount = SerialManager.saveBufferTime * SerialManager.accelIntervalPerSec
+                instance.slopeSaveCount = SerialManager.saveBufferTime * SerialManager.slopeIntervalPerSec
+
+                print('[트리거 레벨] 설정: 간격: %d, %d < x < %d, %d < y < %d, %d < z < %d' %(int(triggerList[6]), int(triggerList[0]), int(triggerList[1]), int(triggerList[2]), int(triggerList[3]), int(triggerList[4]), int(triggerList[5])))
+
             timeList = dic['standardTime'].split('_')
             if len(timeList) == 2:
                 TimeUtil.standardHour = int(timeList[0])
@@ -76,8 +89,6 @@ class MeasureSetting:
 
             request = dic['request']
             if '*RS' in request:
-                instance = SerialManager.instance
-                if instance == None: return
                 instance.createSlopeRequestFile()
                 request = request.replace('*RS', '')
                 request = request.replace('$', '')
@@ -90,8 +101,6 @@ class MeasureSetting:
 
                 print('[경사센서 요청측정]: %d초 측정'%int(request))
             elif '*RA' in request:
-                instance = SerialManager.instance
-                if instance == None: return
                 instance.createAccelRequestFile()
                 request = request.replace('*RA', '')
                 request = request.replace('$', '')
