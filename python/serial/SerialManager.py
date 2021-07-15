@@ -395,27 +395,27 @@ class SerialManager:
                 headerList.append("dynamic , ")
 
             headerList.append(str(TimeUtil.getNewDate()))
-            headerList.append("\n")
+            headerList.append("\r\n")
 
             headerList.append("Date , ")
             headerList.append(str(TimeUtil.getNewDate()))
-            headerList.append("\n")
+            headerList.append("\r\n")
 
             headerList.append("Filename , ")
             headerList.append(fileName)
-            headerList.append("\n")
+            headerList.append("\r\n")
 
             headerList.append("Measure Interval , ")
             # headerList.append(format(1/headerList.append("Measure Interval , "), ".2f"))
             headerList.append(interval)
-            headerList.append("\n")
+            headerList.append("\r\n")
 
             if count == 2:
-                headerList.append("Channel Number , 2\n")
-                headerList.append("DateTime , Elasped_Time(sec) , CH1 , CH2\n")
+                headerList.append("Channel Number , 2\r\n")
+                headerList.append("DateTime , Elasped_Time(sec) , CH1 , CH2\r\n")
             elif count == 3:
-                headerList.append("Channel Number , 3\n")
-                headerList.append("DateTime , Elasped_Time(sec) , CH1 , CH2, CH3\n")
+                headerList.append("Channel Number , 3\r\n")
+                headerList.append("DateTime , Elasped_Time(sec) , CH1 , CH2, CH3\r\n")
             writeString = ''.join(headerList)
             file.write(writeString)
         except Exception as e:
