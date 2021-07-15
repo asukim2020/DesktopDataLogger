@@ -158,13 +158,13 @@ class SerialManager:
                                         self.slopeFile = open(fileName, 'w')
                                         self.slopeDiff = 0.0
                                         self.writeFileHeader(self.slopeFile, fileName, interval, True, 2)
-                                        print("[경사센서 정시측정] 시작")
+                                        # print("[경사센서 정시측정] 시작")
                                 else:
                                     if self.slopeFile != None:
                                         self.slopeFile.close()
                                         self.slopeFile = None
-                                        print("[경사센서 정시측정] 종료")
-                                        api.slopeFileUpload()
+                                        # print("[경사센서 정시측정] 종료")
+                                        # api.slopeFileUpload()
 
                             # request
                             if self.slopeRequestFile != None:
@@ -244,13 +244,13 @@ class SerialManager:
                                         self.accelDiff = 0.0
                                         interval = format(1 / SerialManager.accelIntervalPerSec, ".2f")
                                         self.writeFileHeader(self.accelFile, fileName, interval, False, 3)
-                                        print("[가속도센서 정시측정] 시작")
+                                        # print("[가속도센서 정시측정] 시작")
                                 else:
                                     if self.accelFile != None:
                                         self.accelFile.close()
                                         self.accelFile = None
-                                        print("[가속도센서 정시측정] 종료")
-                                        api.accelFileUpload()
+                                        # print("[가속도센서 정시측정] 종료")
+                                        # api.accelFileUpload()
 
                         else:
                             self.accelCount += 1
@@ -287,7 +287,7 @@ class SerialManager:
             self.slopeDiff += 1 / SerialManager.slopeIntervalPerSec
 
         items.append(nextItem)
-        self.writeFile(file, time, self.slopeDiff, data, isPrint)
+        # self.writeFile(file, time, self.slopeDiff, data, isPrint)
 
     def accelWriteFile(self, file, nextItem, items, isPrint=False):
         if file == None:
@@ -302,7 +302,7 @@ class SerialManager:
             self.accelDiff += 1 / SerialManager.accelIntervalPerSec
 
         items.append(nextItem)
-        self.writeFile(file, time, self.accelDiff, data, isPrint)
+        # self.writeFile(file, time, self.accelDiff, data, isPrint)
 
     def triggerWriteFile(self, file, items, isPrint=False):
         if file == None:
@@ -370,11 +370,11 @@ class SerialManager:
             self.stringList.clear()
             diff = round(diff, 2)
             if diff % 10.0 == 0:
-                if file == self.slopeFile:
-                    print('[경사센서 정시측정]: ' + writeString)
-                elif file == self.accelFile:
-                    print('[가속도센서 정시측정]: ' + writeString)
-                elif file == self.triggerFile:
+                # if file == self.slopeFile:
+                #     print('[경사센서 정시측정]: ' + writeString)
+                # elif file == self.accelFile:
+                #     print('[가속도센서 정시측정]: ' + writeString)
+                if file == self.triggerFile:
                     print('[트리거 측정]: ' + writeString)
                 elif file == self.slopeRequestFile:
                     print('[경사센서 요청측정]: ' + writeString)
