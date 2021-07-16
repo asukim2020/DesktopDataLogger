@@ -423,7 +423,7 @@ class SerialManager:
 
     def createSlopeRequestFile(self):
         if self.slopeRequestFile == None:
-            self.slopeDiff = 0
+            self.slopeRequestDiff = 0
             self.slopeRequestCount = 0
 
             fileName = 'sloperequest.csv'
@@ -433,7 +433,7 @@ class SerialManager:
 
     def createAccelRequestFile(self):
         if self.accelRequestFile == None:
-            self.accelDiff = 0
+            self.accelRequestDiff = 0
             self.accelRequestCount = 0
 
             fileName = 'accelrequest.csv'
