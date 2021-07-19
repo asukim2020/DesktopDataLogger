@@ -75,8 +75,11 @@ class SerialManager:
         self.slopeSaveCount = SerialManager.saveBufferTime * SerialManager.slopeIntervalPerSec
         self.slopeFile = None
         self.slopeDiff = 0.0
-        self.slopeSumX = 0
-        self.slopeSumY = 0
+        self.slopeSum1 = 0
+        self.slopeSum2 = 0
+        self.slopeSum3 = 0
+        self.slopeSum4 = 0
+        self.slopeSum5 = 0
 
         self.stringList = []
 
@@ -128,16 +131,22 @@ class SerialManager:
                         #       )
 
                         # slope data
-                        self.slopeSumX += int(data[4])
-                        self.slopeSumY += int(data[5])
+                        self.slopeSum1 += int(data[1])
+                        self.slopeSum2 += int(data[2])
+                        self.slopeSum3 += int(data[3])
+                        self.slopeSum4 += int(data[4])
+                        self.slopeSum5 += int(data[5])
                         if self.slopeCount >= self.slopeInterval:
-                            avgX = self.slopeSumX / self.slopeInterval
-                            avgY = self.slopeSumY / self.slopeInterval
-                            self.slopeSumX = 0
-                            self.slopeSumY = 0
+                            avg1 = self.slopeSum1 / self.slopeInterval
+                            avg2 = self.slopeSum2 / self.slopeInterval
+                            avg3 = self.slopeSum3 / self.slopeInterval
+                            avg4 = self.slopeSum4 / self.slopeInterval
+                            avg5 = self.slopeSum5 / self.slopeInterval
+                            self.slopeSum4 = 0
+                            self.slopeSum5 = 0
 
                             item = {}
-                            item["data"] = ' %d , %d\r\n' % (avgX, avgY)
+                            item["data"] = ' %d , %d , %d , %d , %d\r\n' % (avg1, avg2, avg3, avg4, avg5)
                             item["time"] = measureItem["time"]
 
                             self.slopeCount = 1
@@ -411,8 +420,8 @@ class SerialManager:
             headerList.append("\r\n")
 
             if count == 2:
-                headerList.append("Channel Number , 2\r\n")
-                headerList.append("DateTime , Elasped_Time(sec) , CH1 , CH2\r\n")
+                headerList.append("Channel Number , 5\r\n")
+                headerList.append("DateTime , Elasped_Time(sec) , CH1 , CH2, CH3, CH4, CH5\r\n")
             elif count == 3:
                 headerList.append("Channel Number , 3\r\n")
                 headerList.append("DateTime , Elasped_Time(sec) , CH1 , CH2, CH3\r\n")
