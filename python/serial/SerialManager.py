@@ -142,6 +142,9 @@ class SerialManager:
                             avg3 = self.slopeSum3 / self.slopeInterval
                             avg4 = self.slopeSum4 / self.slopeInterval
                             avg5 = self.slopeSum5 / self.slopeInterval
+                            self.slopeSum1 = 0
+                            self.slopeSum2 = 0
+                            self.slopeSum3 = 0
                             self.slopeSum4 = 0
                             self.slopeSum5 = 0
 
