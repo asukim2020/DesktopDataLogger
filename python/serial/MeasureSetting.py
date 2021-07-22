@@ -20,7 +20,6 @@ class MeasureSetting:
 
     def getSetting(cls):
         time.sleep(5)
-        print('test')
         from python.serial.SerialManager import SerialManager
         from python.serial.TimeUtil import TimeUtil
         try:
@@ -75,7 +74,7 @@ class MeasureSetting:
                 instance.accelSaveCount = SerialManager.saveBufferTime * SerialManager.accelIntervalPerSec
                 instance.slopeSaveCount = SerialManager.saveBufferTime * SerialManager.slopeIntervalPerSec
 
-                print('[트리거 레벨] 설정: 간격: %d, %d < x < %d, %d < y < %d, %d < z < %d' %(int(triggerList[6]), int(triggerList[0]), int(triggerList[1]), int(triggerList[2]), int(triggerList[3]), int(triggerList[4]), int(triggerList[5])))
+                print('[트리거 레벨] test 설정: 간격: %d, %d < x < %d, %d < y < %d, %d < z < %d' %(int(triggerList[6]), int(triggerList[0]), int(triggerList[1]), int(triggerList[2]), int(triggerList[3]), int(triggerList[4]), int(triggerList[5])))
 
             timeList = dic['standardTime'].split('_')
             if len(timeList) == 2:
