@@ -20,6 +20,7 @@ class MeasureSetting:
 
     def getSetting(cls):
         time.sleep(5)
+        print('test')
         from python.serial.SerialManager import SerialManager
         from python.serial.TimeUtil import TimeUtil
         try:
