@@ -9,7 +9,7 @@ class ScreenOff:
         thread.start()
 
     def screenOff(self):
-        time.sleep(120)
+        time.sleep(3600)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(34, GPIO.OUT)
         GPIO.output(34, GPIO.LOW)
