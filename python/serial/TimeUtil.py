@@ -84,9 +84,11 @@ class TimeUtil:
 
 # test
 if __name__ == "__main__":
-    t = TimeUtil.getNewTimeByLong()
-    print(int((((t % 86400000) / 3600000) + 9 - TimeUtil.standardHour) % 24) % 12)
-    print((t % 3600000) / 60000)
+    t = 1630016434773
+    print(TimeUtil.longToDate(t))
+    # t = TimeUtil.getNewTimeByLong()
+    # print(int((((t % 86400000) / 3600000) + 9 - TimeUtil.standardHour) % 24) % 12)
+    # print((t % 3600000) / 60000)
     # date = TimeUtil.getDate(2021, 6, 24)
     # print(TimeUtil.dateToLong(date))
     # print(TimeUtil.getDate(2021, 6, 24))
